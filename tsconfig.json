@@ -8,15 +8,9 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["components/*"],
-      "@pages/*": ["pages/*"],
-      "@styles/*": ["styles/*"],
-      "@utils/*": ["utils/*"],
-      "@state/*": ["state/*"],
-      "@types": ["types"],
-      "@hooks/*": ["hooks/*"],
-      "@assets/*": ["assets/*"],
-      "@models/*": ["models/*"],
+      "@*": [
+        "./src/*"
+      ]
     },
     "allowJs": true,
     "skipLibCheck": true,
@@ -34,5 +28,6 @@
   },
   "include": [
     "src"
-  ]
+  ],
+  "extends": "./tsconfig.paths.json"
 }
