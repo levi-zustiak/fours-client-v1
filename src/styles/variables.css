@@ -1,0 +1,24 @@
+:root {
+    /*colors*/
+    --red: #FF5964;
+    --yellow: #fce96c;
+    --green: #6BF178;
+    --blue: #35A7FF;
+    --lightgrey: #F8F8F8;
+    --mediumgrey: #E2E2E2;
+    --darkgrey: #b0b0b0;
+    --black: #171717;
+    --background-color: #ffffff;
+
+    --board-color: var(--blue);
+    --board-border: #1699FF;
+
+    --red-shadow: 0 5px 15px rgba(255, 89, 100, .5);
+    --yellow-shadow: 0 5px 15px rgba(255, 231, 138, .75);
+    --blue-shadow: 0 5px 25px rgba(53, 167, 255, .75);
+    --white-shadow: 0 0 15px rgba(93,93,93,.25);
+
+    --title: 2rem;
+    --text: 1rem;
+  }
+  
