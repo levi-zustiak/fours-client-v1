@@ -22,7 +22,6 @@ export default function Ready(props: IReady) {
     const { joinSession } = useGameSessionContext();
 
     const ready = () => {
-        console.log('ready', user, gameId)
         joinSession(user, gameId);
     }
 

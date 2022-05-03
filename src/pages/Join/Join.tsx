@@ -25,7 +25,6 @@ const Join = () => {
     }
 
     useEffect(() => {
-        console.log(gameId);
         setGameId(id);
     }, [gameId])
 

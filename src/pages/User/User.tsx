@@ -23,8 +23,9 @@ function User() {
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
+        const id = window.crypto.randomUUID();
         // Promisify these to make sure the user joined the session
-        setUser(value);
+        setUser({ id: id, name: value});
         navigate('/option');
     }
 

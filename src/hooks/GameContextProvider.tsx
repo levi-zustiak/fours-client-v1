@@ -1,5 +1,6 @@
 import { createContext, useCallback, useMemo, useContext, ReactNode } from 'react';
 import { Socket } from 'socket.io-client';
+import { IUser } from '@types';
 
 import useSocketConnection from '@hooks/useSocketConnection';
 import useGameSession from '@hooks/useGameSession';
@@ -8,9 +9,9 @@ interface ISocketConnection {
     socket: Socket;
     gameId: string;
     connected: boolean;
-    createSession: (user: string) => void;
-    joinSession: (gameId: string, user: string) => void;
-    removeSession: (user: string) => void;
+    createSession: (user: IUser) => void;
+    joinSession: (gameId: string, user: IUser) => void;
+    removeSession: (user: IUser) => void;
     closeConnection: () => void;
     endSession: (gameId: string) => void;
 }
@@ -18,8 +19,8 @@ interface ISocketConnection {
 interface IGameSessionContext {
     socketConnection: ISocketConnection;
     gameSession: any;
-    createSession: (user: string) => void;
-    joinSession: (user: string, gameId: string) => void;
+    createSession: (user: IUser) => void;
+    joinSession: (user: IUser, gameId: string) => void;
     endSession: (gameId: string) => void;
 }
 
@@ -32,7 +33,7 @@ function GameSessionContextProvider({ children }: {children: ReactNode}) {
 
     //add error handler function
 
-    const createSession = useCallback((user: string) => {
+    const createSession = useCallback((user: IUser) => {
         socketConnection.createSession(user)
             .then((session) => socketConnection.waitForPlayer(session))
             .then((session) => gameSession.init(session))
@@ -40,7 +41,7 @@ function GameSessionContextProvider({ children }: {children: ReactNode}) {
             .catch((e) => console.error(e));
     }, []);
 
-    const joinSession = useCallback((user: string, gameId: string) => {
+    const joinSession = useCallback((user: IUser, gameId: string) => {
         socketConnection.joinSession(gameId, user)
             .then((session) => gameSession.init(session))
             .catch((e) => console.error(e));

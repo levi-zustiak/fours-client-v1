@@ -7,6 +7,7 @@ import IToken from './IToken';
 import IUnits from './IUnits';
 import ISession from './ISession';
 import IPeer from './IPeer';
+import IUser from './IUser';
 
 export type {
     ICoords,
@@ -18,4 +19,5 @@ export type {
     IUnits,
     ISession,
     IPeer,
+    IUser,
 };

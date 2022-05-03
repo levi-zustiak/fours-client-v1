@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
-import { IPlayers, IGame } from '@types';
+import { IPlayers, IGame, IPlayer } from '@types';
 
 import userAtom from '@state/User';
 
@@ -12,15 +12,16 @@ function useGame() {
     const user = useRecoilValue(userAtom);
 
     const createGame = (players: IPlayers) => {
-        const p1 = {
+        const p1: IPlayer = {
             ...defaultState.p1,
-            name: players.p1,
-        };
-        const p2 = {
-            ...defaultState.p2,
-            name: players.p2,
+            player: players.p1,
         };
 
+        const p2: IPlayer = {
+            ...defaultState.p2,
+            player: players.p2,
+        };
+        
         setGame({
             ...defaultState,
             p1: p1,
@@ -29,11 +30,11 @@ function useGame() {
         });
     };
 
-    const turn = (col: number) => {
+    const turn = async (col: number) => {
         const tempState = { ...game };
 
-        move(col, tempState);
-        checkWin(tempState);
+        await move(col, tempState);
+        await checkWin(tempState);
 
         return tempState;
     }
@@ -58,8 +59,8 @@ function useGame() {
             checkLeftDiagonal(tempState) ||
             checkDraw(tempState)
         ) {
-            tempState.winner = tempState.currentPlayer.name;
-            tempState.loser = tempState.currentPlayer.name === tempState.p1.name ? tempState.p2.name : tempState.p1.name;
+            tempState.winner = tempState.currentPlayer.player.name;
+            tempState.loser = tempState.currentPlayer.player.name === tempState.p1.player.name ? tempState.p2.player.name : tempState.p1.player.name;
             tempState.gameOver = true;
         } else {
             switchPlayers(tempState);
@@ -75,7 +76,6 @@ function useGame() {
             tempState.board[col][row-2] === tempState.currentPlayer.token &&
             tempState.board[col][row-3] === tempState.currentPlayer.token
             ) {
-                tempState.message = `Player ${game.currentPlayer?.name} wins on the vertical!`
                 return true;
             }
         return false;
@@ -90,7 +90,6 @@ function useGame() {
                 tempState.board[i+2][row] === tempState.currentPlayer.token &&
                 tempState.board[i+3][row] === tempState.currentPlayer.token
                 ) {
-                    tempState.message = `${tempState.currentPlayer.name} wins on the horizontal`;
                     return true;
                 }
         }
@@ -105,7 +104,6 @@ function useGame() {
                     tempState.board[c+2][r+2] === tempState.currentPlayer.token &&
                     tempState.board[c+3][r+3] === tempState.currentPlayer.token
                  ) {
-                     tempState.message = `Player ${tempState.currentPlayer.name} wins on the right diagonal`;
                     return true;
                 }
             }
@@ -121,7 +119,6 @@ function useGame() {
                     tempState.board[c-2][r+2] === tempState.currentPlayer.token &&
                     tempState.board[c-3][r+3] === tempState.currentPlayer.token
                  ) {
-                    tempState.message = `Player ${tempState.currentPlayer.name} wins on the left diagonal`;
                     return true;
                 }
             }
@@ -131,7 +128,6 @@ function useGame() {
 
     const checkDraw = (tempState: IGame): boolean => {
         if (!tempState.board.flat().some(x => x === null)) {
-            tempState.message = `It's a draw! :0`;
             tempState.draw = true;
             return true;
         }
@@ -139,11 +135,11 @@ function useGame() {
     }
 
     const switchPlayers = (tempState: IGame) => {
-        tempState.currentPlayer = tempState.currentPlayer.name === tempState.p1.name ? {...tempState.p2} : {...tempState.p1};
+        tempState.currentPlayer = tempState.currentPlayer.player.id === tempState.p1.player.id ? {...tempState.p2} : {...tempState.p1};
     };
 
     const checkTurn = () => {
-        const myTurn = user === game.currentPlayer?.name ? true : false;
+        const myTurn = user.name === game.currentPlayer.player.name ? true : false;
 
         setGame({
             ...game,
@@ -169,17 +165,17 @@ function useGame() {
         }
     }, [game.currentPlayer]);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (time > 0) {
-                setTime(time => --time);
-            } else {
-                setTime(15);
-            }
-        }, 1000);
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         if (time > 0) {
+    //             setTime(time => --time);
+    //         } else {
+    //             setTime(15);
+    //         }
+    //     }, 1000);
 
-        return () => clearInterval(interval)
-    }, [time]);
+    //     return () => clearInterval(interval)
+    // }, [time]);
 
     return {
         time,

@@ -25,22 +25,34 @@ export const config: RTCConfiguration = {
 
 export const defaultState: IGame = {
     p1: {
-        name: '',
+        player: {
+            id: '',
+            name: '',
+        },
         token: 1,
         primary: 'var(--red)',
         secondary: 'white',
+        border: 'var(--dark-red)',
     },
     p2: {
-        name: '',
+        player: {
+            id: '',
+            name: '',
+        },
         token: 2,
         primary: 'var(--yellow)',
         secondary: 'black',
+        border: 'var(--dark-yellow)',
     },
     currentPlayer: {
-        name: '',
+        player: {
+            id: '',
+            name: '',
+        },
         token: 1,
         primary: 'var(--red)',
         secondary: 'white',
+        border: 'var(--dark-red)'
     },
     winner: '',
     loser: '',

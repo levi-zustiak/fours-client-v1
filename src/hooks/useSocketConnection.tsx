@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { IPeer, ISession } from '@types';
+import { IPeer, ISession, IUser } from '@types';
 
 import { useRecoilState, useResetRecoilState } from 'recoil';
 import gameIdAtom from '@state/GameId';
@@ -27,7 +27,7 @@ const useSocketConnection = () => {
     interface ICreate {
         connected: boolean;
         gameId: string;
-        user: string;
+        user: IUser;
     }
 
     const createAck = ({ connected, gameId, user }: ICreate, resolve: any, reject: any) => {
@@ -42,7 +42,7 @@ const useSocketConnection = () => {
         reject(new Error('Failed to create session'));
     }
 
-    const createSession = useCallback((user: string): Promise<{gameId: string; user: string;}> => {
+    const createSession = useCallback((user: IUser): Promise<{gameId: string; user: IUser;}> => {
         const gameId = window.crypto.randomUUID().slice(0, 8);
 
         setgameId(gameId);
@@ -62,7 +62,7 @@ const useSocketConnection = () => {
     interface IJoin {
         connected: boolean;
         gameId: string;
-        user: string;
+        user: IUser;
         peer: IPeer;
     }
 
@@ -79,7 +79,7 @@ const useSocketConnection = () => {
         reject(new Error('Failed to create session'));
     }
 
-    const joinSession = useCallback((gameId: string, user: string): Promise<ISession> => {
+    const joinSession = useCallback((gameId: string, user: IUser): Promise<ISession> => {
         setgameId(gameId);
 
         return new Promise ((resolve: any, reject: any) => {
@@ -92,7 +92,7 @@ const useSocketConnection = () => {
         });
     }, []);
 
-    const removeSession = useCallback((user: string) => {
+    const removeSession = useCallback((user: IUser) => {
         if (socket) {
             socket.emit('removeSession', {
                 gameId: gameId,
@@ -101,7 +101,7 @@ const useSocketConnection = () => {
         }
     }, []);
 
-    const waitForPlayer = useCallback(async (session: {gameId: string; user: string}): Promise<ISession> => {
+    const waitForPlayer = useCallback(async (session: {gameId: string; user: IUser}): Promise<ISession> => {
         return new Promise ((resolve) => {
             socket.on('player-joined', ({ peer }) => {
                 resolve({

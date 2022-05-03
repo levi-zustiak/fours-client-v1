@@ -8,7 +8,8 @@ function PlayerCard(props: IPlayerCard) {
     const { position } = props;
     const { gameSession } = useGameSessionContext();
 
-    const player = gameSession.game[position] ?? {};
+    const player = gameSession.game[position].player ?? {};
+    console.log(gameSession.game);
 
     return (
         <Container player={player}>

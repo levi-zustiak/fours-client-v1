@@ -1,8 +1,11 @@
+import { IUser } from '@types';
+
 interface IPlayer {
-    name: string;
+    player: IUser;
     token: number;
-    primary: string;
+    primary: string; 
     secondary: string;
+    border: string;
 }
 
 export default IPlayer;

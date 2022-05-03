@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client';
 import { config } from '../utils/Constants';
-import { IPeer } from '@types';
+import { IPeer, IUser } from '@types';
 
 interface IData {
     type: string;
@@ -8,7 +8,7 @@ interface IData {
 }
 
 class PeerConnectionSession {
-    user!: string;
+    user!: IUser;
     peer!: IPeer;
     gameId!: string;
     _socket: Socket;
@@ -22,7 +22,7 @@ class PeerConnectionSession {
     }
 
     init(gameId: string,
-        user: string,
+        user: IUser,
         peer: IPeer,
         onData: (e: any) => void,
         handleConnectionOpen: () => void,
