@@ -1,15 +1,14 @@
 import ICell from './ICell';
-import { CellContainer, Token, TokenStyle } from './Cell.styled';
-import { useUnitContext } from '@hooks/UnitContextProvider';
+import { CellContainer, Token } from './Cell.styled';
+import { useUnitContext } from '@providers/UnitContextProvider';
 
 export function Cell(props: ICell) {
-    const { value } = props;
+    const { token } = props;
     const { units } = useUnitContext();
 
     return (
         <CellContainer units={units}>
-            {value && <Token value={value} units={units}>
-                <TokenStyle />
+            {token && <Token token={token} units={units}>
             </Token>}
         </CellContainer>
     )

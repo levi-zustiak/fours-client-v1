@@ -1,5 +1,7 @@
+import { IToken } from "@types";
+
 interface ICell {
-    value: any;
+    token: IToken | null;
 }
 
 export default ICell;

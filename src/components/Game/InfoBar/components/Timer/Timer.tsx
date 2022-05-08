@@ -1,15 +1,15 @@
-import { useGameSessionContext } from '@hooks/GameContextProvider';
+import { useSessionContext } from '@providers/SessionContextProvider';
 
 import { Container, Text } from './Timer.styled';
 
 function Timer() {
-    const { gameSession } = useGameSessionContext();
+    const { game } = useSessionContext();
 
-    const player = gameSession.game.currentPlayer ?? {};
+    const player = game.state.currentPlayer ?? {};
 
     return (
         <Container player={player}>
-            <Text>{gameSession.time}</Text>
+            <Text>{game.time}</Text>
         </Container>
     );
 }

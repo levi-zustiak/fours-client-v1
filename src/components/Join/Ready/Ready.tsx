@@ -1,5 +1,3 @@
-import { useGameSessionContext } from "@hooks/GameContextProvider";
-
 import IReady from './IReady';
 
 import CloseButton from '@components/CloseButton';
@@ -10,20 +8,12 @@ import {
     Title,
     Description
 } from '@styles/Step.styled';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import userAtom from '@state/User';
-import gameIdAtom from '@state/GameId';
 
 export default function Ready(props: IReady) {
     const { prevStep } = props;
 
-    const user = useRecoilValue(userAtom);
-    const [gameId, ] = useRecoilState(gameIdAtom);
-    const { joinSession } = useGameSessionContext();
-
     const ready = () => {
-        console.log('ready', user, gameId)
-        joinSession(user, gameId);
+        return
     }
 
     const back = () => {

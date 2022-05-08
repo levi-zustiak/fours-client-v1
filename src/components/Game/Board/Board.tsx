@@ -3,7 +3,7 @@ import IBoard from './IBoard';
 import { BoardContainer } from './Board.styled';
 
 import Column from '@components/Game/Column';
-import { useUnitContext } from '@hooks/UnitContextProvider';
+import { useUnitContext } from '@providers/UnitContextProvider';
 
 export function Board(props: IBoard) {
     const { board } = props;

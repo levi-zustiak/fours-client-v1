@@ -5,10 +5,10 @@ const { persistAtom } = recoilPersist();
 
 import EAtoms from '@state/EAtoms';
 
-const gameIdAtom = atom({
-    key: EAtoms.GAMEID,
-    default: '',
-    effects_UNSTABLE: [persistAtom],
+const sessionAtom = atom({
+    key: EAtoms.SESSION,
+    default: {},
+    // effects_UNSTABLE: [persistAtom],
 });
 
-export default gameIdAtom;
+export default sessionAtom;

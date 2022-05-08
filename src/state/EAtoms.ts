@@ -1,7 +1,7 @@
 export enum EAtoms {
     ERROR = 'ERROR',
     USER = 'USER',
-    GAMEID = 'GAMEID',
+    SESSION = 'SESSION',
 }
 
 export default EAtoms;

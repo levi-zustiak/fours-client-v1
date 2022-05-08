@@ -1,9 +1,10 @@
-import IPeer from './IPeer';
+import IUser from './IUser';
 
 interface ISession{
-    gameId: string;
-    user: string;
-    peer: IPeer
+    type?: string;
+    gameId?: string;
+    peer?: IUser;
+    connected?: boolean;
 }
 
 export default ISession;
