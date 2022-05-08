@@ -1,125 +1,142 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { IPeer, ISession, IUser } from '@types';
+import { IUser, ISession } from '@types';
 
 import { useRecoilState, useResetRecoilState } from 'recoil';
-import gameIdAtom from '@state/GameId';
+import userAtom from '@state/User';
+import sessionAtom from '@state/Session';
+
+enum Session {
+    PEER = 'PEER',
+    HOST = 'HOST',
+}
 
 const useSocketConnection = () => {
-    const [gameId, setgameId] = useRecoilState(gameIdAtom);
-    const reset = useResetRecoilState(gameIdAtom);
-    const [connected, setConnected] = useState<boolean>(false);
+    const [user, setUser] = useRecoilState(userAtom);
+    const [session, setSession] = useRecoilState<ISession>(sessionAtom);
+    const reset = useResetRecoilState(sessionAtom);
 
     const closeConnection = useCallback(() => {
         socket?.close();
     }, []);
 
-    const endSession = useCallback((gameId: string) => {
+    const endSession = (gameId: string) => {
         socket.emit('endSession', { gameId: gameId, user: 'test' });
         reset();
-        setConnected(false);
-    }, []);
+    }
 
     const socket: Socket = useMemo(() => {
         return io(process.env.REACT_APP_SERVER_URL || 'localhost:3001');
     }, []);
 
-    interface ICreate {
-        connected: boolean;
-        gameId: string;
-        user: IUser;
+    interface IResponse {
+        status: boolean;
+        data?: any;
+        error?: Error;
     }
 
-    const createAck = ({ connected, gameId, user }: ICreate, resolve: any, reject: any) => {
-        if (connected) {
-            setConnected(connected);
-            resolve({
-                gameId: gameId,
-                user: user,
-            });
+    const createAck = ({ status, data, error }: IResponse) => {
+        console.log('createAck');
+        if (!status) {
+            console.error(error);
+            throw new Error('Failed to create game');
         }
 
-        reject(new Error('Failed to create session'));
+        setSession({
+            type: Session.HOST,
+            gameId: data.gameId,
+        })
     }
 
-    const createSession = useCallback((user: IUser): Promise<{gameId: string; user: IUser;}> => {
-        const gameId = window.crypto.randomUUID().slice(0, 8);
-
-        setgameId(gameId);
-
-        return new Promise((resolve, reject) => {
-            socket.emit('createSession', {
-                gameId: gameId,
+    const create = useCallback(async (user: IUser): Promise<void> => {
+        try {
+            console.log('create');
+            await socket.emit('createSession', {
                 user: user,
-            }, async (data: ICreate) => {
-                await createAck(data, resolve, reject);
-            });
-        })
+            }, createAck);
+
+        } catch (e) {
+            console.error(e);
+        }
     }, []);
+
+    const handleJoin = async ({ peer }: { peer: IUser }) => {
+        setSession({
+            ...session,
+            connected: true,
+            peer: peer,
+        });
+    }
 
     //get the game state from the other player when reconnecting to a gameSession
 
-    interface IJoin {
-        connected: boolean;
-        gameId: string;
-        user: IUser;
-        peer: IPeer;
-    }
-
-    const joinAck = ({ connected, gameId, user, peer }: IJoin, resolve: (value: ISession) => void, reject: any) => {
-        if (connected) {
-            setConnected(connected);
-            resolve({
-                gameId: gameId,
-                user: user,
-                peer: peer,
-            });
+    const joinAck = ({ status, data, error }: IResponse) => {
+        if (!status) {
+            console.error(error);
+            throw new Error('Failed to join game');
         }
 
-        reject(new Error('Failed to create session'));
+        setSession({
+            connected: true,
+            type: Session.PEER,
+            gameId: data?.gameId,
+            peer: data?.peer,
+        });
     }
 
-    const joinSession = useCallback((gameId: string, user: IUser): Promise<ISession> => {
-        setgameId(gameId);
-
-        return new Promise ((resolve: any, reject: any) => {
-            socket.emit('joinSession', {
+    const join = useCallback(async (gameId: string, user: IUser): Promise<void> => {
+        try {
+            await socket.emit('joinSession', {
                 gameId: gameId,
                 user: user,
-            }, async (data: IJoin) => {
-                await joinAck(data, resolve, reject);
-            });
-        });
+            }, joinAck);
+        } catch (e) {
+            console.error(e);
+        }
     }, []);
 
-    const removeSession = useCallback((user: IUser) => {
+    const removeSession = (user: IUser) => {
         if (socket) {
             socket.emit('removeSession', {
-                gameId: gameId,
+                gameId: session.gameId,
                 user: user,
             });
         }
-    }, []);
+    }
 
-    const waitForPlayer = useCallback(async (session: {gameId: string; user: IUser}): Promise<ISession> => {
-        return new Promise ((resolve) => {
-            socket.on('player-joined', ({ peer }) => {
-                resolve({
-                    ...session,
-                    peer: peer
-                });
-            });
-        })
-    }, []);
+    const setListeners = () => {
+        console.log('socket listeners');
+        socket.on('player-joined', handleJoin);
+    };
+
+    const removeListeners = () => {
+        socket.off('player-joined');
+    };
+
+    useEffect(() => {
+        if (socket.id) {
+            setUser({
+                ...user,
+                socket: socket.id
+            })
+        }
+    }, [socket.id]);
+
+    useEffect(() => {
+        if (session.gameId) {
+            setListeners();
+        }
+
+        return () => {
+            removeListeners();
+        }
+    }, [session]);
 
     return {
         socket,
-        gameId,
-        connected,
-        createSession,
-        joinSession,
+        create,
+        join,
         removeSession,
-        waitForPlayer,
         closeConnection,
         endSession,
     }

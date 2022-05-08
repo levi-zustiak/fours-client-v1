@@ -1,10 +1,10 @@
-import { useGameSessionContext } from '@hooks/GameContextProvider';
+import { useSessionContext } from '@providers/SessionContextProvider';
 
 import { ModalCard, Flex, Button } from '@styles/Global.styled';
 import { Icon } from './Win.styled';
 
 export function Win() {
-    const { gameSession } = useGameSessionContext();
+    const { newGame } = useSessionContext();
 
     return (
         <ModalCard>
@@ -15,7 +15,7 @@ export function Win() {
                 </Icon>
                 <h2>You Win!</h2>
                 <Flex direction="row" gap="1rem" >
-                    <Button color="yellow" onClick={gameSession.newGame}>New Game</Button>
+                    <Button color="yellow" onClick={newGame}>New Game</Button>
                     <Button color="red">Leave</Button>
                 </Flex>
         </ModalCard>

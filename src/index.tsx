@@ -8,9 +8,11 @@ import {
   Join,
   Play,
 } from '@pages';
+import RequireAuth from '@utils/RequireAuth';
+import RequireConnection from '@utils/RequireConnection';
 import { RecoilRoot } from 'recoil';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { GameSessionContextProvider } from '@hooks/GameContextProvider';
+import { SessionContextProvider } from '@providers/SessionContextProvider';
 import '@styles/global.css'
 import '@styles/variables.css';
 
@@ -21,16 +23,37 @@ root.render(
   <React.StrictMode>
     <RecoilRoot>
       <Router>
-        <GameSessionContextProvider>
+        <SessionContextProvider>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="user" element={<User />} />
-            <Route path="option" element={<Option />} />
-            <Route path="create" element={<Create />} />
-            <Route path="join/:id" element={<Join />} />
-            <Route path="play" element={<Play />} />
+            <Route index element={<Home />} />
+            <Route path="/user" element={<User />} />
+            <Route path="/option" element={<Option />} />
+            <Route
+              path="/create"
+              element={
+                <RequireAuth>
+                  <Create />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/join/:id"
+              element={
+                <RequireAuth>
+                  <Join />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="play"
+              element={
+                <RequireConnection>
+                  <Play />
+                </RequireConnection>
+              }
+            />
           </Routes>
-        </GameSessionContextProvider>
+        </SessionContextProvider>
       </Router>
     </RecoilRoot>
   </React.StrictMode>

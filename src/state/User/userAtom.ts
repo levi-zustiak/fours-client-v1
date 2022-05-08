@@ -9,6 +9,7 @@ import { IUser } from '@types';
 const defaultState: IUser = {
     id: '',
     name: '',
+    socket: '',
 }
 
 const userAtom = atom({

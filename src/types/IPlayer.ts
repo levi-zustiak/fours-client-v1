@@ -1,11 +1,10 @@
-import { IUser } from '@types';
+import IUser from './IUser';
+import IToken from './IToken';
 
 interface IPlayer {
-    player: IUser;
-    token: number;
-    primary: string; 
-    secondary: string;
-    border: string;
+    id: number;
+    token: IToken;
+    user?: IUser;
 }
 
 export default IPlayer;

@@ -1,5 +1,7 @@
+import { IToken } from "@types";
+
 interface IBoard {
-    board: Array<Array<number | null>>;
+    board: Array<Array<IToken | null>>;
 }
 
 export default IBoard;

@@ -1,4 +1,4 @@
-import { useGameSessionContext } from '@hooks/GameContextProvider';
+import { useSessionContext } from '@providers/SessionContextProvider';
 
 import IStart from './IStart';
 
@@ -14,11 +14,11 @@ import {
 export default function Start(props: IStart) {
     const { prevStep } = props;
 
-    const { gameSession } = useGameSessionContext();
+    const { peerConnection, newGame } = useSessionContext();
 
     const startGame = () => {
-        if (gameSession.connected) {
-            gameSession.gameInit();
+        if (peerConnection.connected) {
+            newGame();
         }
     }
 

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { IUnits, IPlayer } from '@types';
+import { IUnits } from '@types';
 
 interface IContainer {
     units: IUnits;
@@ -15,17 +15,14 @@ export const CellContainer = styled.div<IContainer>`
 `
 
 const style = ({ token, units }: IToken) => (
-    `background-color: ${token.primary};
-    // border: ${units.m} solid ${token.secondary};
-    // div {
-    //     border: ${units.s} solid var(--dark-red);
-    //     height: 100%;
-    //     width: 100%;
-    //     border-radius: 50%;
-    // }`);
+    `background-color: ${token.primary};`
+);
 
 interface IToken {
-    token: IPlayer;
+    token: {
+        primary: string;
+        secondary: string;
+    };
     units: IUnits;
 }
 

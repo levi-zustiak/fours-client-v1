@@ -1,5 +1,7 @@
 interface IToken {
-    value: number;
+    id: number;
+    primary: string;
+    secondary: string;
 }
 
 export default IToken;

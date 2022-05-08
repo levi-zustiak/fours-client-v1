@@ -8,18 +8,11 @@ import {
     Title,
     Description,
 } from '@styles/Step.styled';
-import { useGameSessionContext } from '@hooks/GameContextProvider';
-import { useRecoilValue } from 'recoil';
-import userAtom from '@state/User';
 
 export default function Option() {
-    const { createSession } = useGameSessionContext();
     const navigate = useNavigate();
 
-    const user = useRecoilValue(userAtom);
-
     const create = () => {
-        createSession(user);
         navigate('/create');
     }
 

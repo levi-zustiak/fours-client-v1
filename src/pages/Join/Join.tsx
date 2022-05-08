@@ -2,18 +2,20 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useRecoilState, useRecoilValue } from 'recoil';
-import gameIdAtom from '@state/GameId';
 
 import { Ready } from '@components/Join';
 import { Container } from './Join.styled';
 import userAtom from '@state/User';
-import { useGameSessionContext } from '@hooks/GameContextProvider';
+import { useSessionContext } from '@providers/SessionContextProvider';
+import sessionAtom from '@state/Session';
+import { ISession } from '@types';
+import GameId from '@components/GameId';
 
 const Join = () => {
     const [step, setStep] = useState(1);
-    const [gameId, setGameId] = useRecoilState(gameIdAtom);
-    const { joinSession } = useGameSessionContext();
+    const { socketConnection, peerConnection } = useSessionContext();
     const user = useRecoilValue(userAtom);
+    const [session, setSession] = useRecoilState<ISession>(sessionAtom);
     const { id } = useParams();
 
     const nextStep = () => {
@@ -25,14 +27,22 @@ const Join = () => {
     }
 
     useEffect(() => {
-        setGameId(id);
-    }, [gameId])
+        setSession({
+            ...session,
+            gameId: id,
+        })
+    }, [id])
 
-    // useEffect(() => {
-    //     if (user && gameId) {
-    //         joinSession(user, gameId);
-    //     }
-    // })
+    useEffect(() => {
+        if (session.gameId) {
+            socketConnection.join(session.gameId, user);
+            peerConnection.setListeners();
+        }
+
+        return () => {
+            peerConnection.removeListeners();
+        }
+    }, [session.gameId]);
 
     const getStep = useCallback(() => {
         switch (step) {
@@ -50,6 +60,7 @@ const Join = () => {
     return (
         <Container>
             {getStep()}
+            {session.gameId && <GameId id={session.gameId} />}
         </Container>
     );
 }

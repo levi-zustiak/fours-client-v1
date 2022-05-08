@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import userAtom from '@state/User';
 
 import { Container } from './User.styled';
@@ -15,18 +15,32 @@ import {
     Form
 } from '@styles/Step.styled';
 
+interface LocationState {
+    from: {
+        pathname: string;
+    }
+}
+
 function User() {
     const [value, setValue] = useState<string>('');
-    const setUser = useSetRecoilState(userAtom);
+    const [user, setUser] = useRecoilState(userAtom);
 
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const state = location.state as LocationState;
+
+    const path= state?.from?.pathname || '/option';
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
         const id = window.crypto.randomUUID();
-        // Promisify these to make sure the user joined the session
-        setUser({ id: id, name: value});
-        navigate('/option');
+        setUser({
+            ...user,
+            id: id,
+            name: value
+        });
+        navigate(path, { replace: true });
     }
 
     return (

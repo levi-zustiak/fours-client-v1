@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useGameSessionContext } from '@hooks/GameContextProvider';
+import { useSessionContext } from '@providers/SessionContextProvider';
 
 import IInvite from './IInvite';
 
@@ -11,23 +11,32 @@ import {
     Title,
     Description
 } from '@styles/Step.styled';
+import { useRecoilValue } from 'recoil';
+import userAtom from '@state/User';
+import sessionAtom from '@state/Session';
+import { ISession } from '@types';
 
 export default function Invite(props: IInvite) {
     const { nextStep } = props;
+    const user = useRecoilValue(userAtom);
+    const session = useRecoilValue<ISession>(sessionAtom);
 
-    const { socketConnection, gameSession } = useGameSessionContext();
+    const { socketConnection, peerConnection } = useSessionContext();
 
     const copyInvite = () => {
-        const invite = `${process.env.REACT_APP_CLIENT_URL}/join/${socketConnection.gameId}`;
+        const invite = `${process.env.REACT_APP_CLIENT_URL}/join/${session.gameId}`;
         navigator.clipboard.writeText(invite);
     }
 
     useEffect(() => {
-        if (gameSession.connected) {
-            console.log('connected');
+        socketConnection.create(user);
+    }, []);
+
+    useEffect(() => {
+        if (peerConnection.connected) {
             nextStep();
         }
-    }, [gameSession]);
+    }, [peerConnection]);
 
     const back = () => {
         //close socket connection

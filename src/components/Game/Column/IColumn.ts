@@ -1,6 +1,8 @@
+import { IToken } from "@types";
+
 interface IColumn {
     index: number;
-    column: Array<number | null>;
+    column: Array<IToken | null>;
 }
 
 export default IColumn;

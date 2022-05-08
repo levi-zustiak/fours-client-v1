@@ -1,94 +1,127 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { IPlayers, IGame, IPlayer } from '@types';
+import { IPlayers, IGame, IToken, ICoords } from '@types';
 
 import userAtom from '@state/User';
 
 import { defaultState } from '@utils/Constants';
 
+interface IMoveState {
+    board: Array<Array<IToken | null>>;
+    move: ICoords;
+}
+
 function useGame() {
-    const [game, setGame] = useState(defaultState);
-    const [time, setTime] = useState(15);
+    const [state, setState] = useState<IGame>(defaultState);
+    const [time, setTime] = useState<number>(15);
     const user = useRecoilValue(userAtom);
 
-    const createGame = (players: IPlayers) => {
-        const p1: IPlayer = {
-            ...defaultState.p1,
-            player: players.p1,
-        };
+    const init = (players: IPlayers) => {
+        console.log('gameInit', players);
+        const p1 = {
+            ...state.p1,
+            user: players.p1
+        }
 
-        const p2: IPlayer = {
-            ...defaultState.p2,
-            player: players.p2,
-        };
-        
-        setGame({
+        const p2 = {
+            ...state.p2,
+            user: players.p2
+        }
+
+        console.log(p1, p2);
+
+        setState({
             ...defaultState,
             p1: p1,
             p2: p2,
             currentPlayer: p1,
+            playing: true,
         });
     };
 
     const turn = async (col: number) => {
-        const tempState = { ...game };
+        console.log('turn');
+        const moveState: IMoveState = await move(col);
+        const newState = await checkWin(moveState);
 
-        await move(col, tempState);
-        await checkWin(tempState);
+        console.log('turn', newState, state);
 
-        return tempState;
+        return {
+            ...state,
+            ...newState,
+        };
     }
 
-    const move = (col: number, tempState: IGame): void => {
-        const board = copyBoard(game.board);
+    const isValidMove = (col: number) => {
+        console.log('isValid');
+        return state.board[col].includes(null);
+    }
+
+    const move = (col: number): IMoveState => {
+        console.log(move);
+        const board = copyBoard(state.board);
         const row = board[col].indexOf(null);
 
-        if (row === -1) throw new Error('Row is full :(');
+        board[col][row] = state.currentPlayer.token;
+        const coords = { col: col, row: row };
 
-        board[col][row] = game.currentPlayer?.token;
-
-        tempState.board = board;
-        tempState.move = { col: col, row: row };
+        return {
+            board: board,
+            move: coords,
+        };
     };
 
-    const checkWin = (tempState: IGame) => {
+    const checkWin = async (moveState: IMoveState) => {
+        const { board } = moveState;
         if (
-            checkVertical(tempState) ||
-            checkHorizontal(tempState) ||
-            checkRightDiagonal(tempState) ||
-            checkLeftDiagonal(tempState) ||
-            checkDraw(tempState)
+            checkVertical(moveState) ||
+            checkHorizontal(moveState) ||
+            checkRightDiagonal(moveState) ||
+            checkLeftDiagonal(moveState) ||
+            checkDraw(moveState)
         ) {
-            tempState.winner = tempState.currentPlayer.player.name;
-            tempState.loser = tempState.currentPlayer.player.name === tempState.p1.player.name ? tempState.p2.player.name : tempState.p1.player.name;
-            tempState.gameOver = true;
+            const { p1, p2, currentPlayer } = state;
+            const winner = currentPlayer.user?.id;
+            const loser = currentPlayer.id === 1 ? p2.user?.id : p1.user?.id
+            return {
+                board: board,
+                winner: winner,
+                loser: loser,
+                playing: false,
+            }
         } else {
-            switchPlayers(tempState);
+            const currentPlayer = await switchPlayers();
+            return {
+                board: board,
+                currentPlayer: currentPlayer,
+            }
         }
     }
 
-    const checkVertical = (tempState: IGame): boolean => {
-        const { col, row } = tempState.move;
+    const checkVertical = ({ board, move }: IMoveState): boolean => {
+        const { currentPlayer } = state;
+        const { col, row } = move;
     
         if (row < 3) return false;
         
-        else if (tempState.board[col][row-1] === tempState.currentPlayer.token &&
-            tempState.board[col][row-2] === tempState.currentPlayer.token &&
-            tempState.board[col][row-3] === tempState.currentPlayer.token
+        else if (board[col][row-1]?.id === currentPlayer.id &&
+            board[col][row-2]?.id === currentPlayer.id &&
+            board[col][row-3]?.id === currentPlayer.id
             ) {
                 return true;
             }
         return false;
     }
     
-    const checkHorizontal = (tempState: IGame): boolean => {
-        const { row } = tempState.move;
+    const checkHorizontal = ({ board, move }: IMoveState): boolean => {
+        const { currentPlayer } = state;
+        const { row } = move;
     
         for (let i = 0; i < 4; i++) {
-            if (tempState.board[i][row] === tempState.currentPlayer.token &&
-                tempState.board[i+1][row] === tempState.currentPlayer.token &&
-                tempState.board[i+2][row] === tempState.currentPlayer.token &&
-                tempState.board[i+3][row] === tempState.currentPlayer.token
+            if (board[i][row]?.id === currentPlayer.id &&
+                board[i+1][row]?.id === currentPlayer.id &&
+                board[i+2][row]?.id === currentPlayer.id &&
+                board[i+3][row]?.id === currentPlayer.id
                 ) {
                     return true;
                 }
@@ -96,13 +129,15 @@ function useGame() {
         return false;
     }
     
-    const checkRightDiagonal = (tempState: IGame): boolean => {
+    const checkRightDiagonal = ({ board }: IMoveState): boolean => {
+        const { currentPlayer } = state;
+
         for (let c = 0; c < 4; c++) {
             for (let r = 0; r < 4; r++) {
-                if (tempState.board[c][r] === tempState.currentPlayer.token &&
-                    tempState.board[c+1][r+1] === tempState.currentPlayer.token &&
-                    tempState.board[c+2][r+2] === tempState.currentPlayer.token &&
-                    tempState.board[c+3][r+3] === tempState.currentPlayer.token
+                if (board[c][r]?.id === currentPlayer.id &&
+                    board[c+1][r+1]?.id === currentPlayer.id &&
+                    board[c+2][r+2]?.id === currentPlayer.id &&
+                    board[c+3][r+3]?.id === currentPlayer.id
                  ) {
                     return true;
                 }
@@ -111,13 +146,15 @@ function useGame() {
         return false;
     }
     
-    const checkLeftDiagonal = (tempState: IGame): boolean => {
+    const checkLeftDiagonal = ({ board }: IMoveState): boolean => {
+        const { currentPlayer } = state;
+
         for (let c = 3; c < 7; c++) {
             for (let r = 0; r < 4; r++) {
-                if (tempState.board[c][r] === tempState.currentPlayer.token &&
-                    tempState.board[c-1][r+1] === tempState.currentPlayer.token &&
-                    tempState.board[c-2][r+2] === tempState.currentPlayer.token &&
-                    tempState.board[c-3][r+3] === tempState.currentPlayer.token
+                if (board[c][r]?.id === currentPlayer.id &&
+                    board[c-1][r+1]?.id === currentPlayer.id &&
+                    board[c-2][r+2]?.id === currentPlayer.id &&
+                    board[c-3][r+3]?.id === currentPlayer.id
                  ) {
                     return true;
                 }
@@ -126,28 +163,26 @@ function useGame() {
         return false;
     }
 
-    const checkDraw = (tempState: IGame): boolean => {
-        if (!tempState.board.flat().some(x => x === null)) {
-            tempState.draw = true;
+    const checkDraw = ({ board }: IMoveState): boolean => {
+        if (!board.flat().some(x => x === null)) {
             return true;
         }
         return false;
     }
 
-    const switchPlayers = (tempState: IGame) => {
-        tempState.currentPlayer = tempState.currentPlayer.player.id === tempState.p1.player.id ? {...tempState.p2} : {...tempState.p1};
+    const switchPlayers = () => {
+        const { p1, p2, currentPlayer } = state;
+
+        console.log('switch', p1, p2)
+
+        return currentPlayer.id === 1 ? {...p2} : {...p1};
     };
 
-    const checkTurn = () => {
-        const myTurn = user.name === game.currentPlayer.player.name ? true : false;
-
-        setGame({
-            ...game,
-            myTurn: myTurn,
-        });
+    const myTurn = (): boolean => {
+        return user.id === state.currentPlayer.user?.id;
     }
 
-    const copyBoard = (board: Array<Array<null | number>>) => {
+    const copyBoard = (board: Array<Array<IToken | null>>) => {
         return [
             [...board[0]],
             [...board[1]],
@@ -158,12 +193,6 @@ function useGame() {
             [...board[6]]
         ];
     };
-
-    useEffect(() => {
-        if (game.currentPlayer) {
-            checkTurn();
-        }
-    }, [game.currentPlayer]);
 
     // useEffect(() => {
     //     const interval = setInterval(() => {
@@ -178,11 +207,13 @@ function useGame() {
     // }, [time]);
 
     return {
-        time,
-        game,
-        setGame,
-        createGame,
+        state,
+        setState,
+        init,
         turn,
+        myTurn,
+        isValidMove,
+        time
     }
 }
 

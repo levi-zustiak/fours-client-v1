@@ -1,4 +1,4 @@
-import { IGame } from '@types';
+import { IGame, IPlayer } from '@types';
 
 export const config: RTCConfiguration = {
     iceServers: [
@@ -23,51 +23,39 @@ export const config: RTCConfiguration = {
     ]
 };
 
-export const defaultState: IGame = {
-    p1: {
-        player: {
-            id: '',
-            name: '',
-        },
-        token: 1,
+const p1: IPlayer = {
+    id: 1,
+    token: {
+        id: 1,
         primary: 'var(--red)',
         secondary: 'white',
-        border: 'var(--dark-red)',
     },
-    p2: {
-        player: {
-            id: '',
-            name: '',
-        },
-        token: 2,
+}
+
+const p2: IPlayer = {
+    id: 2,
+    token: {
+        id: 2,
         primary: 'var(--yellow)',
         secondary: 'black',
-        border: 'var(--dark-yellow)',
-    },
-    currentPlayer: {
-        player: {
-            id: '',
-            name: '',
-        },
-        token: 1,
-        primary: 'var(--red)',
-        secondary: 'white',
-        border: 'var(--dark-red)'
-    },
+    }
+}
+
+export const defaultState: IGame = {
+    p1: p1,
+    p2: p2,
+    currentPlayer: p1,
     winner: '',
     loser: '',
     draw: false,
-    gameOver: false,
-    message: '',
+    playing: false,
     board: [
         [null, null, null, null, null, null],
-        [2, null, null, null, null, null],
         [null, null, null, null, null, null],
-        [1, 2, null, null, null, null],
-        [1, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
         [null, null, null, null, null, null],
         [null, null, null, null, null, null]
-    ],
-    move: { col: -1, row: -1},
-    myTurn: false,
+    ]
 };

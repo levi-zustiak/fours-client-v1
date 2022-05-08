@@ -1,15 +1,17 @@
-import { useCallback, useState } from 'react';
-
-import { useGameSessionContext } from '@hooks/GameContextProvider';
+import { useCallback, useEffect, useState } from 'react';
 
 import GameId from '@components/GameId';
 import { Invite, Start } from '@components/Create';
 import { Container } from './Create.styled'
+import { useRecoilValue } from 'recoil';
+import sessionAtom from '@state/Session';
+import { ISession } from '@types';
+import { useSessionContext } from '@providers/SessionContextProvider';
 
 const Create = () => {
     const [step, setStep] = useState(1);
-    const { socketConnection } = useGameSessionContext();
-    const gameId = socketConnection.gameId;
+    const session = useRecoilValue<ISession>(sessionAtom);
+    const { peerConnection } = useSessionContext();
 
     const nextStep = () => {
         setStep((step) => ++step)
@@ -18,6 +20,14 @@ const Create = () => {
     const prevStep = () => {
         setStep((step) => --step);
     }
+
+    useEffect(() => {
+        peerConnection.setListeners();
+
+        return () => {
+            peerConnection.removeListeners();
+        }
+    }, []);
 
     const getStep = useCallback(() => {
         switch (step) {
@@ -41,7 +51,7 @@ const Create = () => {
     return (
         <Container>
             {getStep()}
-            {gameId && <GameId id={gameId} />}
+            {session.gameId && <GameId id={session.gameId} />}
         </Container>
     )
 }

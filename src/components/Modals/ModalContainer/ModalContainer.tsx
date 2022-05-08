@@ -11,9 +11,8 @@ export function ModalContainer(props: IModalContainer) {
     const { game } = props;
     const user = useRecoilValue(userAtom);
 
-
-    const winner = game.winner === user.name && !game.draw;
-    const loser = game.loser === user.name && !game.draw;
+    const winner = game.winner && game.winner === user.id && !game.draw;
+    const loser = game.loser && game.loser === user.id && !game.draw;
 
     return (
         <Container>
