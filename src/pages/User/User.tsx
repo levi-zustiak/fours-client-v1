@@ -15,7 +15,7 @@ import {
     Form
 } from '@styles/Step.styled';
 
-interface LocationState {
+type LocationState = {
     from: {
         pathname: string;
     }

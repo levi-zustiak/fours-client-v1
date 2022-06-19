@@ -1,7 +1,5 @@
-export interface IUser {
+export type User = {
     id?: string;
     name?: string;
     socket?: string;
 }
-
-export default IUser;

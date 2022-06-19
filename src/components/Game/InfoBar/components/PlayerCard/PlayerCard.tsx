@@ -1,10 +1,12 @@
 import { useSessionContext } from '@providers/SessionContextProvider';
 
-import IPlayerCard from './IPlayerCard';
-
 import { Container, Text } from './PlayerCard.styled';
 
-function PlayerCard(props: IPlayerCard) {
+type PlayerCardProps = {
+    position: string;
+}
+
+function PlayerCard(props: PlayerCardProps) {
     const { position } = props;
 
     return (

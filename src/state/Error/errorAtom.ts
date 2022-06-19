@@ -1,9 +1,12 @@
 import { atom } from 'recoil';
 
 import EAtoms from '@state/EAtoms';
-import IError from './IError';
 
-const defaultState: IError = {
+type Error = {
+    msg: string;
+}
+
+const defaultState: Error = {
     msg: '',
 };
 

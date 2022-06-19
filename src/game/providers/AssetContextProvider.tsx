@@ -8,17 +8,17 @@ import YellowTokenSprite from "../assets/Yellow_token.png";
 
 type Args = [width: number, height: number];
 
-interface IBoardAsset {
+interface BoardAsset {
   texture: Texture,
   args: Args
 }
 
-interface IColumnAsset {
+interface ColumnAsset {
   args: Args,
   xOffset: number
 }
 
-interface ITokenAsset {
+interface TokenAsset {
   [key: string]: any;
   redTexture: Texture,
   yellowTexture: Texture,
@@ -28,13 +28,13 @@ interface ITokenAsset {
   starting: number
 }
 
-interface IAssetContext {
-  boardAsset: IBoardAsset;
-  columnAsset: IColumnAsset;
-  tokenAsset: ITokenAsset;
+interface AssetContext {
+  boardAsset: BoardAsset;
+  columnAsset: ColumnAsset;
+  tokenAsset: TokenAsset;
 }
 
-const AssetContext = createContext<IAssetContext | undefined>(undefined);
+const AssetContext = createContext<AssetContext | undefined>(undefined);
 
 function AssetContextProvider({children}: {children: ReactNode}) {
   const { viewport } = useThree();

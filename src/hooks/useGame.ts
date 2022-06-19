@@ -1,27 +1,18 @@
 import { useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { IPlayers, IGame, IToken, ICoords, IPlayer } from '@types';
+import { GameState, GameOptions, BoardValue, Coords } from '@types';
 
 import userAtom from '@state/User';
 
 import { defaultState } from '@utils/Constants';
 
-interface IMoveState {
-    board: Array<Array<IPlayer | null>>;
-    move: ICoords;
-}
-
-interface IMessage {
-    type: string;
-    data: any;
-}
-
-export type GameOptions = {
-    players: IPlayers;
+type MoveState = {
+    board: Array<Array<BoardValue>>;
+    move: Coords;
 }
 
 function useGame() {
-    const [state, setState] = useState<IGame>(defaultState);
+    const [state, setState] = useState<GameState>(defaultState);
     const user = useRecoilValue(userAtom);
 
     const start = (opts: GameOptions) => {
@@ -52,7 +43,7 @@ function useGame() {
         return state.board[col].indexOf(null);
     }
 
-    const getState = async (col: number): Promise<IGame> => {
+    const getState = async (col: number): Promise<GameState> => {
         const board = copyBoard(state.board);
         const row = board[col].indexOf(null);
 
@@ -64,14 +55,14 @@ function useGame() {
             move: coords,
         };
 
-        const newState: IGame = await checkWin(moveState);
+        const newState: GameState = await checkWin(moveState);
 
         setState(newState);
 
         return newState;
     };
 
-    const checkWin = async (moveState: IMoveState) => {
+    const checkWin = async (moveState: MoveState) => {
         const { board } = moveState;
         if (
             checkVertical(moveState) ||
@@ -100,7 +91,7 @@ function useGame() {
         }
     }
 
-    const checkVertical = ({ board, move }: IMoveState): boolean => {
+    const checkVertical = ({ board, move }: MoveState): boolean => {
         const { currentPlayer } = state;
         const { col, row } = move;
     
@@ -115,7 +106,7 @@ function useGame() {
         return false;
     }
     
-    const checkHorizontal = ({ board, move }: IMoveState): boolean => {
+    const checkHorizontal = ({ board, move }: MoveState): boolean => {
         const { currentPlayer } = state;
         const { row } = move;
     
@@ -131,7 +122,7 @@ function useGame() {
         return false;
     }
     
-    const checkRightDiagonal = ({ board }: IMoveState): boolean => {
+    const checkRightDiagonal = ({ board }: MoveState): boolean => {
         const { currentPlayer } = state;
 
         for (let c = 0; c < 4; c++) {
@@ -148,7 +139,7 @@ function useGame() {
         return false;
     }
     
-    const checkLeftDiagonal = ({ board }: IMoveState): boolean => {
+    const checkLeftDiagonal = ({ board }: MoveState): boolean => {
         const { currentPlayer } = state;
 
         for (let c = 3; c < 7; c++) {
@@ -165,7 +156,7 @@ function useGame() {
         return false;
     }
 
-    const checkDraw = ({ board }: IMoveState): boolean => {
+    const checkDraw = ({ board }: MoveState): boolean => {
         if (!board.flat().some(x => x === null)) {
             return true;
         }
@@ -182,7 +173,7 @@ function useGame() {
         return user.id === state.currentPlayer.user?.id;
     }
 
-    const copyBoard = (board: Array<Array<IPlayer | null>>) => {
+    const copyBoard = (board: Array<Array<BoardValue>>) => {
         return board.map(column => [...column]);
     };
 

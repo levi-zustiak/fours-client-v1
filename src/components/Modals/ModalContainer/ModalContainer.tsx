@@ -1,13 +1,18 @@
 import { useRecoilValue } from 'recoil';
 import userAtom from '@state/User';
 
-import IModalContainer from './IModalContainer';
 import Win from "../Win";
 import Lose from "../Lose";
 
 import { Container } from "@styles/Global.styled";
 
-export function ModalContainer(props: IModalContainer) {
+import { GameState } from '@types';
+
+type ModalContainerProps = {
+    game: GameState;
+}
+
+export function ModalContainer(props: ModalContainerProps) {
     const { game } = props;
     const user = useRecoilValue(userAtom);
 

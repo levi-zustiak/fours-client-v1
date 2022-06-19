@@ -1,14 +1,13 @@
 import { createContext, useMemo, useContext, ReactNode, MutableRefObject, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import useSession from '@hooks/useSession';
 
-import { ISession, IPlayers, IGame, IMessage, IUser } from '@types';
+import { User } from '@types';
 
-import { useNavigate } from 'react-router-dom';
-
-interface Session {
+type Session = {
     type: MutableRefObject<string | undefined>;
-    peer: MutableRefObject<IUser | undefined>;
+    peer: MutableRefObject<User | undefined>;
     gameId: MutableRefObject<string | undefined>;
     channel: MutableRefObject<RTCDataChannel | undefined>;
     connected: boolean;
@@ -19,7 +18,7 @@ interface Session {
     closeConnection: () => Promise<void>;
 }
 
-interface SessionContext {
+type SessionContext = {
     session: Session;
 }
 
@@ -34,12 +33,6 @@ function SessionContextProvider({ children }: {children: ReactNode}) {
             navigate('/play');
         }
     }, [session.connected])
-    
-    // Deprecated: No longer need these
-    // const endSession = useCallback(() => {
-    //     socketConnection.endSession();
-    //     peerConnection.closeConnection();
-    // }, []);
 
     const contextValue: SessionContext = useMemo(() => ({
         session

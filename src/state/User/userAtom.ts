@@ -1,9 +1,9 @@
 import { atom } from 'recoil';
 
 import EAtoms from '@state/EAtoms';
-import { IUser } from '@types';
+import { User } from '@types';
 
-const defaultState: IUser = {
+const defaultState: User = {
     id: '',
     name: '',
 }

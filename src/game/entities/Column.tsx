@@ -6,11 +6,11 @@ import { useAssetContext } from "../providers/AssetContextProvider";
 import GameObject from "../components/GameObject";
 import Token from "./Token";
 import { useGameContext } from "@providers/GameContextProvider";
-import { IPlayer } from "@types";
+import { BoardValue } from "@types";
 
 interface ColumnProps {
   index: number;
-  column: Array<null | IPlayer>;
+  column: Array<BoardValue>;
 }
 
 function Column(props: ColumnProps) {

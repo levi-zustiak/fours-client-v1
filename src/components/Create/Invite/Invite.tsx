@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import { useSessionContext } from '@providers/SessionContextProvider';
 
-import IInvite from './IInvite';
-
 import CloseButton from '@components/CloseButton';
 import { Flex, Button } from '@styles/Global.styled';
 import {
@@ -14,8 +12,7 @@ import {
 import { useRecoilValue } from 'recoil';
 import userAtom from '@state/User';
 
-export default function Invite(props: IInvite) {
-    const { nextStep } = props;
+export default function Invite() {
     const user = useRecoilValue(userAtom);
 
     const { session } = useSessionContext();

@@ -1,5 +1,5 @@
 import { useTransition, SpringValue } from "@react-spring/three";
-import { IPlayer } from "@types";
+import { Player } from "@types";
 
 import GameObject from "../components/GameObject";
 
@@ -7,7 +7,7 @@ import { useAssetContext } from "../providers/AssetContextProvider";
 
 interface TokenProps {
   index: number;
-  value: IPlayer;
+  value: Player;
 }
 
 function Token(props: TokenProps) {

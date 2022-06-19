@@ -1,16 +1,16 @@
 import styled from 'styled-components';
-import { IPlayer } from '@types';
+import { Player } from '@types';
 
-const style = ({ player }: IContainer) => (`
+const style = ({ player }: Container) => (`
     background-color: ${player.color};
     color: ${player.color};
 `);
 
-interface IContainer {
-    player: IPlayer
+type Container = {
+    player: Player
 }
 
-export const Container = styled.div<IContainer>`
+export const Container = styled.div<Container>`
     ${p => style(p)}
     border-radius: 8px;
 `

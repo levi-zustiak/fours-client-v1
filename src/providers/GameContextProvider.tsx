@@ -1,29 +1,32 @@
 import useGame from '@hooks/useGame';
-import { IMessage } from '@types';
 import { createContext, useMemo, useContext, ReactNode, useEffect } from 'react';
-import { GameOptions } from '@hooks/useGame';
 
-import { IGame, IPlayers } from '@types';
+import { GameOptions, GameState, Players } from '@types';
 import { useSessionContext } from './SessionContextProvider';
 import { useRecoilValue } from 'recoil';
 import userAtom from '@state/User';
 
-interface Game {
-    state: IGame;
+export type Message = {
+    type: string;
+    data: any;
+}
+
+type Game = {
+    state: GameState;
     setState: any;
-    getState: (col: number) => Promise<IGame>;
+    getState: (col: number) => Promise<GameState>;
     start: (opts: GameOptions) => void;
     myTurn: () => boolean;
     isAvailable: (move: number) => boolean;
     getNextRow: (col: number) => number;
 }
 
-interface GameContext {
+type GameContext = {
     game: Game;
     move: (col: number) => void;
 }
 
-interface GameContextProps {
+type GameContextProps = {
     children: ReactNode;
 }
 
@@ -46,7 +49,7 @@ function GameContextProvider({ children }: GameContextProps) {
         }
     }
 
-    const sendMessage = (message: IMessage): void => {
+    const sendMessage = (message: Message): void => {
         session.channel.current?.send(JSON.stringify(message));
     }
 
@@ -84,7 +87,7 @@ function GameContextProvider({ children }: GameContextProps) {
     }
 
     const newGame = () => {
-        const players = {
+        const players: Players = {
             p1: user,
             p2: session.peer.current
         };

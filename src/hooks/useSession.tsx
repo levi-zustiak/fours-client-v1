@@ -5,7 +5,7 @@ import userAtom from '@state/User';
 
 import { config } from '@utils/Constants';
 
-import { IUser, IMessage } from '@types';
+import { User } from 'src/types';
 
 import useSocket from './useSocket';
 
@@ -25,9 +25,9 @@ type ConnectionMessage = {
 
 const useSession = () => {
     const { socket } = useSocket();
-    const user = useRecoilValue<IUser>(userAtom);
+    const user = useRecoilValue<User>(userAtom);
     const type = useRef<string>();
-    const peer = useRef<IUser>();
+    const peer = useRef<User>();
     const gameId = useRef<string>();
     const channel = useRef<RTCDataChannel>();
     const pc = useRef<RTCPeerConnection>();
@@ -101,7 +101,7 @@ const useSession = () => {
         });
     }, [user]);
 
-    const handleJoin = ({ player }: { player: IUser }): void => {
+    const handleJoin = ({ player }: { player: User }): void => {
             peer.current = player;
 
             createOffer();

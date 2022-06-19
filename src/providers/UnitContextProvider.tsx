@@ -1,9 +1,7 @@
 import { createContext, useState, useEffect, useMemo, useContext, ReactNode } from 'react';
 
-import { IUnits } from '@types';
-
 interface IUnitContext {
-    units: IUnits;
+    units: any;
 }
 
 interface IUnitContextProvider {
@@ -16,7 +14,7 @@ const UnitContext = createContext<IUnitContext | undefined>(undefined);
 function UnitContextProvider(props: IUnitContextProvider) {
     const { children, value } = props;
 
-    const [units, setUnits] = useState<IUnits>({
+    const [units, setUnits] = useState({
         xl: '32px',  //960 -> 32
         l: '16px',   //960 -> 16
         m: '8px',   //960 -> 8

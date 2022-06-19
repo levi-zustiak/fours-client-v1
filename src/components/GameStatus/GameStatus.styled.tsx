@@ -9,11 +9,11 @@ export const Container = styled.div`
     gap: 8px;
 `
 
-interface IStatus {
+interface Status {
     status?: boolean;
 }
 
-export const StatusIndicator = styled.div<IStatus>`
+export const StatusIndicator = styled.div<Status>`
     border-radius: 50%;
     background-color: ${p => p.status ? 'var(--green)' : 'var(--mediumgrey)'};
     height: 12px;

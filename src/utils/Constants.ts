@@ -1,4 +1,4 @@
-import { IGame, IPlayer } from '@types';
+import { GameState, Player } from '@types';
 
 export const config: RTCConfiguration = {
     iceServers: [
@@ -23,19 +23,19 @@ export const config: RTCConfiguration = {
     ]
 };
 
-const p1: IPlayer = {
+const p1: Player = {
     id: 1,
     token: 'redTexture',
     color: '#FF5964',
 }
 
-const p2: IPlayer = {
+const p2: Player = {
     id: 2,
     token: 'yellowTexture',
     color: '#FBEC8A',
 }
 
-export const defaultState: IGame = {
+export const defaultState: GameState = {
     p1: p1,
     p2: p2,
     currentPlayer: p1,
