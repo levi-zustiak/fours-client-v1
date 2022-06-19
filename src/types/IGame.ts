@@ -1,6 +1,7 @@
-import { IPlayer, IToken } from '@types';
+import { IPlayer } from '@types';
 
 interface IGame {
+    [key: string]: any;
     p1: IPlayer;
     p2: IPlayer;
     currentPlayer: IPlayer;
@@ -8,7 +9,7 @@ interface IGame {
     loser?: string;
     draw: boolean;
     playing: boolean;
-    board: Array<Array<IToken | null>>;
+    board: Array<Array<IPlayer | null>>;
 }
 
 export default IGame;

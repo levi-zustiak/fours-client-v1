@@ -1,7 +1,8 @@
 import { atom } from "recoil";
+import EAtoms from "../EAtoms";
 
 const placeholderAtom = atom({
-  key: "PLACEHOLDER",
+  key: EAtoms.PLACEHOLDER,
   default: { col: 3, row: 0 }
 });
 

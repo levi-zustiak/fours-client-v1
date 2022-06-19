@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import { IPlayer } from '@types';
 
 const style = ({ player }: IContainer) => (`
-    background-color: ${player.token.primary};
-    color: ${player.token.secondary};
+    background-color: ${player.color};
+    color: ${player.color};
 `);
 
 interface IContainer {

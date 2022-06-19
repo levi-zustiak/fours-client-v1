@@ -13,30 +13,23 @@ import {
 } from '@styles/Step.styled';
 import { useRecoilValue } from 'recoil';
 import userAtom from '@state/User';
-import sessionAtom from '@state/Session';
-import { ISession } from '@types';
 
 export default function Invite(props: IInvite) {
     const { nextStep } = props;
     const user = useRecoilValue(userAtom);
-    const session = useRecoilValue<ISession>(sessionAtom);
 
-    const { socketConnection, peerConnection } = useSessionContext();
+    const { session } = useSessionContext();
 
     const copyInvite = () => {
-        const invite = `${process.env.REACT_APP_CLIENT_URL}/join/${session.gameId}`;
+        const invite = `${process.env.REACT_APP_CLIENT_URL}/join/${session.gameId?.current}`;
         navigator.clipboard.writeText(invite);
     }
 
     useEffect(() => {
-        socketConnection.create(user);
-    }, []);
-
-    useEffect(() => {
-        if (peerConnection.connected) {
-            nextStep();
+        if (!session.connecting.current) {
+            session.create();
         }
-    }, [peerConnection]);
+    }, []);
 
     const back = () => {
         //close socket connection

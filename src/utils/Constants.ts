@@ -25,20 +25,14 @@ export const config: RTCConfiguration = {
 
 const p1: IPlayer = {
     id: 1,
-    token: {
-        id: 1,
-        primary: 'var(--red)',
-        secondary: 'white',
-    },
+    token: 'redTexture',
+    color: '#FF5964',
 }
 
 const p2: IPlayer = {
     id: 2,
-    token: {
-        id: 2,
-        primary: 'var(--yellow)',
-        secondary: 'black',
-    }
+    token: 'yellowTexture',
+    color: '#FBEC8A',
 }
 
 export const defaultState: IGame = {

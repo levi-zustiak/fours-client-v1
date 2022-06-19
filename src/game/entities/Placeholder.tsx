@@ -1,21 +1,19 @@
 import { useCallback, useEffect } from "react";
 import { useSpring } from "@react-spring/three";
 
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { useAssetContext } from "../providers/AssetContextProvider";
-import useHelpers from "../hooks/useHelpers";
-import gameAtom from "../state/gameAtom";
-import placeholderAtom from "../state/placeholderAtom";
+import placeholderAtom from "@state/Placeholder";
 
 import GameObject from "../components/GameObject";
+import { useGameContext } from "@providers/GameContextProvider";
 
 function Placeholder() {
   const { tokenAsset } = useAssetContext();
-  const { getNextRow, isAvailable } = useHelpers();
-  const { board, turn } = useRecoilValue(gameAtom);
+  const { game } = useGameContext();
   const [{ col, row }, setPlaceholder] = useRecoilState(placeholderAtom);
 
-  const texture = turn ? tokenAsset.redTexture : tokenAsset.yellowTexture;
+  const texture = tokenAsset[game.state.currentPlayer.token];
 
   const x = tokenAsset.xOffset * (col - 3);
   const y = tokenAsset.yOffset * (row - 2.5);
@@ -35,30 +33,30 @@ function Placeholder() {
   });
 
   const getNextPosition = () => {
-    if (isAvailable(col)) {
+    if (game.isAvailable(col)) {
       setPlaceholder({
         col: col,
-        row: getNextRow(col)
+        row: game.getNextRow(col)
       });
-    } else if (isAvailable(3)) {
+    } else if (game.isAvailable(3)) {
       setPlaceholder({
         col: 3,
-        row: getNextRow(3)
+        row: game.getNextRow(3)
       });
     } else {
       let i, j;
 
       for (i = 4, j = 2; i < 7; i++, j--) {
-        if (isAvailable(j)) {
+        if (game.isAvailable(j)) {
           setPlaceholder({
             col: j,
-            row: getNextRow(j)
+            row: game.getNextRow(j)
           });
           break;
-        } else if (isAvailable(i)) {
+        } else if (game.isAvailable(i)) {
           setPlaceholder({
             col: i,
-            row: getNextRow(i)
+            row: game.getNextRow(i)
           });
           break;
         }
@@ -68,7 +66,7 @@ function Placeholder() {
 
   useEffect(() => {
     getNextPosition();
-  }, [board]);
+  }, [game.state]);
 
   return (
     <GameObject

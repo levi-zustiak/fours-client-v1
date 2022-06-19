@@ -1,10 +1,17 @@
 import styled from 'styled-components';
 
 export const PlayContainer = styled.div`
-    // overflow: hidden;
     height: 100vh;
     max-width: 960px;
     margin: 0 auto;
-    padding: 2rem;
-    border: 1px solid red;
+    // border: 1px solid red;
+    display: flex;
+    justify-content: center;
+`
+
+export const GameContainer = styled.div`
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    max-width: 480px;
+    align-self: center;
 `

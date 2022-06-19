@@ -19,6 +19,7 @@ interface IColumnAsset {
 }
 
 interface ITokenAsset {
+  [key: string]: any;
   redTexture: Texture,
   yellowTexture: Texture,
   args: Args,

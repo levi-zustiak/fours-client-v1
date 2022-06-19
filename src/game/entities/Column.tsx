@@ -1,54 +1,36 @@
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { v4 } from "uuid";
+import { useSetRecoilState } from "recoil";
 
-import gameAtom from "../state/gameAtom";
-import placeholderAtom from "../state/placeholderAtom";
+import placeholderAtom from "@state/Placeholder";
 import { useAssetContext } from "../providers/AssetContextProvider";
-import useHelpers from "../hooks/useHelpers";
 
 import GameObject from "../components/GameObject";
 import Token from "./Token";
+import { useGameContext } from "@providers/GameContextProvider";
+import { IPlayer } from "@types";
 
 interface ColumnProps {
   index: number;
-  column: Array<null | { key: string, value: boolean }>;
+  column: Array<null | IPlayer>;
 }
 
 function Column(props: ColumnProps) {
   const { index, column } = props;
   const { columnAsset } = useAssetContext();
-  const { getNextRow, isAvailable } = useHelpers();
+  const { game, move } = useGameContext();
 
-  const [game, setGame] = useRecoilState(gameAtom);
   const setPlaceholder = useSetRecoilState(placeholderAtom);
-  const { board, turn } = game;
 
   const x = columnAsset.xOffset * (index - 3);
 
-  const copyBoard = () => {
-    return board.map((column) => [...column]);
-  };
-
-  const handleClick = async () => {
-    if (isAvailable(index)) {
-      const row = getNextRow(index);
-      const newBoard = await copyBoard();
-
-      newBoard[index][row] = { key: v4(), value: turn };
-
-      setGame({
-        ...game,
-        turn: !turn,
-        board: newBoard
-      });
-    }
+  const handleClick = () => {
+    move(index);
   };
 
   const handleHover = () => {
-    if (isAvailable(index)) {
+    if (game.isAvailable(index)) {
       setPlaceholder({
         col: index,
-        row: getNextRow(index)
+        row: game.getNextRow(index)
       });
     }
   };
@@ -65,8 +47,8 @@ function Column(props: ColumnProps) {
       geometry={columnAsset.args}
     >
       {column.map(
-        (token, index) =>
-          token && <Token key={index} index={index} token={token} />
+        (value, index) =>
+          value && <Token key={index} index={index} value={value} />
       )}
     </GameObject>
   );

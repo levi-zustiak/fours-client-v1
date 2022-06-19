@@ -1,21 +1,14 @@
-import { useRecoilValue } from "recoil";
-
 import { useAssetContext } from "../providers/AssetContextProvider";
 
 import Column from "./Column";
 import Placeholder from "./Placeholder";
 import GameObject from "../components/GameObject";
 
-import gameAtom from "../state/gameAtom";
-
-import { useSessionContext } from "@providers/SessionContextProvider";
+import { useGameContext } from "@providers/GameContextProvider";
 
 function Board() {
-  const { game } = useSessionContext();
-  const { board } = useRecoilValue(gameAtom);
   const { boardAsset } = useAssetContext();
-
-  console.log(game);
+  const { game } = useGameContext();
 
   return (
     <GameObject
@@ -23,7 +16,7 @@ function Board() {
       geometry={boardAsset.args}
       texture={boardAsset.texture}
     >
-      {board.map((column, i) => (
+      {game.state.board.map((column, i) => (
         <Column key={i} index={i} column={column} />
       ))}
       <Placeholder />

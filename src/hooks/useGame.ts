@@ -1,34 +1,39 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { IPlayers, IGame, IToken, ICoords } from '@types';
+import { IPlayers, IGame, IToken, ICoords, IPlayer } from '@types';
 
 import userAtom from '@state/User';
 
 import { defaultState } from '@utils/Constants';
 
 interface IMoveState {
-    board: Array<Array<IToken | null>>;
+    board: Array<Array<IPlayer | null>>;
     move: ICoords;
+}
+
+interface IMessage {
+    type: string;
+    data: any;
+}
+
+export type GameOptions = {
+    players: IPlayers;
 }
 
 function useGame() {
     const [state, setState] = useState<IGame>(defaultState);
-    const [time, setTime] = useState<number>(15);
     const user = useRecoilValue(userAtom);
 
-    const init = (players: IPlayers) => {
-        console.log('gameInit', players);
+    const start = (opts: GameOptions) => {
         const p1 = {
             ...state.p1,
-            user: players.p1
+            user: opts.players.p1
         }
 
         const p2 = {
             ...state.p2,
-            user: players.p2
+            user: opts.players.p2
         }
-
-        console.log(p1, p2);
 
         setState({
             ...defaultState,
@@ -39,36 +44,31 @@ function useGame() {
         });
     };
 
-    const turn = async (col: number) => {
-        console.log('turn');
-        const moveState: IMoveState = await move(col);
-        const newState = await checkWin(moveState);
-
-        console.log('turn', newState, state);
-
-        return {
-            ...state,
-            ...newState,
-        };
-    }
-
-    const isValidMove = (col: number) => {
-        console.log('isValid');
+    const isAvailable = (col: number): boolean => {
         return state.board[col].includes(null);
     }
 
-    const move = (col: number): IMoveState => {
-        console.log(move);
+    const getNextRow = (col: number): number => {
+        return state.board[col].indexOf(null);
+    }
+
+    const getState = async (col: number): Promise<IGame> => {
         const board = copyBoard(state.board);
         const row = board[col].indexOf(null);
 
-        board[col][row] = state.currentPlayer.token;
+        board[col][row] = state.currentPlayer;
         const coords = { col: col, row: row };
 
-        return {
+        const moveState = {
             board: board,
             move: coords,
         };
+
+        const newState: IGame = await checkWin(moveState);
+
+        setState(newState);
+
+        return newState;
     };
 
     const checkWin = async (moveState: IMoveState) => {
@@ -84,6 +84,7 @@ function useGame() {
             const winner = currentPlayer.user?.id;
             const loser = currentPlayer.id === 1 ? p2.user?.id : p1.user?.id
             return {
+                ...state,
                 board: board,
                 winner: winner,
                 loser: loser,
@@ -92,6 +93,7 @@ function useGame() {
         } else {
             const currentPlayer = await switchPlayers();
             return {
+                ...state,
                 board: board,
                 currentPlayer: currentPlayer,
             }
@@ -173,8 +175,6 @@ function useGame() {
     const switchPlayers = () => {
         const { p1, p2, currentPlayer } = state;
 
-        console.log('switch', p1, p2)
-
         return currentPlayer.id === 1 ? {...p2} : {...p1};
     };
 
@@ -182,38 +182,18 @@ function useGame() {
         return user.id === state.currentPlayer.user?.id;
     }
 
-    const copyBoard = (board: Array<Array<IToken | null>>) => {
-        return [
-            [...board[0]],
-            [...board[1]],
-            [...board[2]],
-            [...board[3]],
-            [...board[4]],
-            [...board[5]],
-            [...board[6]]
-        ];
+    const copyBoard = (board: Array<Array<IPlayer | null>>) => {
+        return board.map(column => [...column]);
     };
-
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         if (time > 0) {
-    //             setTime(time => --time);
-    //         } else {
-    //             setTime(15);
-    //         }
-    //     }, 1000);
-
-    //     return () => clearInterval(interval)
-    // }, [time]);
 
     return {
         state,
         setState,
-        init,
-        turn,
+        getState,
+        start,
         myTurn,
-        isValidMove,
-        time
+        isAvailable,
+        getNextRow
     }
 }
 

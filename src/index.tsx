@@ -20,7 +20,7 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <RecoilRoot>
       <Router>
         <SessionContextProvider>
@@ -47,15 +47,15 @@ root.render(
             <Route
               path="play"
               element={
-                <RequireConnection>
+                // <RequireConnection>
                   <Play />
-                </RequireConnection>
+                // </RequireConnection>
               }
             />
           </Routes>
         </SessionContextProvider>
       </Router>
     </RecoilRoot>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
 

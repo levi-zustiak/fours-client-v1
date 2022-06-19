@@ -1,10 +1,10 @@
-import { useSessionContext } from '@providers/SessionContextProvider';
-
 import { ModalCard, Flex, Button } from '@styles/Global.styled';
 import { Icon } from './Lose.styled';
 
 export function Lose() {
-    const { newGame } = useSessionContext();
+    const newGame = () => {
+        null
+    };
 
     return (
         <ModalCard>
