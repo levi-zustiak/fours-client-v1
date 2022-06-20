@@ -26,7 +26,7 @@ export default function Option() {
                 <TextContainer>
                     <Title>Option</Title>
                     <CloseButton />
-                    <Description>Choose whether to create a game or join another player.</Description>
+                    <Description>Create or join a game to play with friends!</Description>
                 </TextContainer>
                 <Flex gap="1rem">
                     <Button

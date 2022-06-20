@@ -6,6 +6,7 @@ import {
   Option,
   Create,
   Join,
+  JoinById,
   Play,
 } from '@pages';
 import RequireAuth from '@utils/RequireAuth';
@@ -44,15 +45,15 @@ root.render(
                 </RequireAuth>
               }
             >
-              <Route
-                path=":id"
-                element={
-                  <RequireAuth>
-                    <Join />
-                  </RequireAuth>
-                }
-              />
             </Route>
+            <Route
+              path="/join/:id"
+              element={
+                <RequireAuth>
+                  <JoinById />
+                </RequireAuth>
+              }
+            />
             <Route
               path="play"
               element={

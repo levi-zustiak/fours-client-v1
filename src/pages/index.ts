@@ -3,6 +3,7 @@ import User from './User';
 import Option from './Option';
 import Create from './Create';
 import Join from './Join';
+import JoinById from './JoinById';
 import Play from './Play';
 
 export {
@@ -11,5 +12,6 @@ export {
     Option,
     Create,
     Join,
+    JoinById,
     Play,
 }

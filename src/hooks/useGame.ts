@@ -13,6 +13,7 @@ type MoveState = {
 
 function useGame() {
     const [state, setState] = useState<GameState>(defaultState);
+    // const [playingAs, setPlayingAs] = useState<string>();
     const user = useRecoilValue(userAtom);
 
     const start = (opts: GameOptions) => {

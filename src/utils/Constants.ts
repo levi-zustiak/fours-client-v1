@@ -25,13 +25,13 @@ export const config: RTCConfiguration = {
 
 const p1: Player = {
     id: 1,
-    token: 'redTexture',
+    position: 'p1',
     color: '#FF5964',
 }
 
 const p2: Player = {
     id: 2,
-    token: 'yellowTexture',
+    position: 'p2',
     color: '#FBEC8A',
 }
 
