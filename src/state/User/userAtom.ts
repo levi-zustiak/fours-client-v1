@@ -1,14 +1,16 @@
 import { atom } from 'recoil';
-import { recoilPersist } from 'recoil-persist';
-
-const { persistAtom } = recoilPersist();
 
 import EAtoms from '@state/EAtoms';
+import { User } from '@types';
+
+const defaultState: User = {
+    id: '',
+    name: '',
+}
 
 const userAtom = atom({
     key: EAtoms.USER,
-    default: '',
-    effects_UNSTABLE: [persistAtom],
+    default: defaultState,
 });
 
 export default userAtom;

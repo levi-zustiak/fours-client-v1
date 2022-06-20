@@ -1,13 +1,10 @@
-// import { useGameSessionContext } from '@hooks/GameContextProvider';
 import { Container, Icon } from './CloseButton.styled';
 import { useNavigate } from 'react-router-dom';
 
 export default function CloseButton() {
-    // const { socketConnection, endSession } = useGameSessionContext();
     const navigate = useNavigate();
 
     const handleClick = () => {
-        // endSession(socketConnection.gameId);
         navigate('/');
     }
 

@@ -1,10 +1,10 @@
-import { useGameSessionContext } from '@hooks/GameContextProvider';
-
 import { ModalCard, Flex, Button } from '@styles/Global.styled';
 import { Icon } from './Lose.styled';
 
 export function Lose() {
-    const { gameSession } = useGameSessionContext();
+    const newGame = () => {
+        null
+    };
 
     return (
         <ModalCard>
@@ -15,7 +15,7 @@ export function Lose() {
             </Icon>
             <h2>You Lose...</h2>
             <Flex direction="row" gap="1rem" >
-                <Button color="yellow" onClick={gameSession.newGame}>New Game</Button>
+                <Button color="yellow" onClick={newGame}>New Game</Button>
                 <Button color="red">Leave</Button>
             </Flex>
         </ModalCard>

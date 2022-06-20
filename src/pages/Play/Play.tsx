@@ -1,32 +1,27 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { GameContainer, PlayContainer } from './Play.styled';
 
-import { PlayContainer } from './Play.styled';
+// import { InfoBar } from '@components/Game';
+// import { ModalContainer } from '@components/Modals';
 
-import { Board, InfoBar } from '@components/Game';
-import { ModalContainer } from '@components/Modals';
-
-import { useGameSessionContext } from '@hooks/GameContextProvider';
-import { UnitContextProvider } from '@hooks/UnitContextProvider';
+import { GameContextProvider } from '@providers/GameContextProvider';
+// import { UnitContextProvider } from '@providers/UnitContextProvider';
+import Game from '../../game';
+import { useSessionContext } from '@providers/SessionContextProvider';
 
 function Play() {
-    const { gameSession } = useGameSessionContext();
+    const { session } = useSessionContext(); 
 
-    const container = useRef<HTMLDivElement | null>(null);
-    const [refState, setRefState] = useState<HTMLDivElement>();
-
-    useEffect(() => {
-        if (!container.current) return;
-
-        setRefState(container.current);
-    }, [container]);
-    
     return (
-        <PlayContainer ref={container}>
-                <UnitContextProvider value={refState}>
-                <Board board={gameSession.game.board} />
+        <PlayContainer>
+            <GameContainer>
+                <GameContextProvider>
+                    <Game />
+                </GameContextProvider>
+            </GameContainer>
+                {/* <UnitContextProvider value={refState}>
                 <InfoBar />
-                {gameSession.game?.gameOver && <ModalContainer game={gameSession.game} />}
-            </UnitContextProvider>
+                {!game.state.playing && <ModalContainer game={game.state} />}
+            </UnitContextProvider> */}
         </PlayContainer>
     )
 }

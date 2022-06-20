@@ -1,4 +1,4 @@
-import { IGame } from '@types';
+import { GameState, Player } from '@types';
 
 export const config: RTCConfiguration = {
     iceServers: [
@@ -23,39 +23,33 @@ export const config: RTCConfiguration = {
     ]
 };
 
-export const defaultState: IGame = {
-    p1: {
-        name: '',
-        token: 1,
-        primary: 'var(--red)',
-        secondary: 'white',
-    },
-    p2: {
-        name: '',
-        token: 2,
-        primary: 'var(--yellow)',
-        secondary: 'black',
-    },
-    currentPlayer: {
-        name: '',
-        token: 1,
-        primary: 'var(--red)',
-        secondary: 'white',
-    },
+const p1: Player = {
+    id: 1,
+    token: 'redTexture',
+    color: '#FF5964',
+}
+
+const p2: Player = {
+    id: 2,
+    token: 'yellowTexture',
+    color: '#FBEC8A',
+}
+
+export const defaultState: GameState = {
+    p1: p1,
+    p2: p2,
+    currentPlayer: p1,
     winner: '',
     loser: '',
     draw: false,
-    gameOver: false,
-    message: '',
+    playing: false,
     board: [
         [null, null, null, null, null, null],
-        [2, null, null, null, null, null],
         [null, null, null, null, null, null],
-        [1, 2, null, null, null, null],
-        [1, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
+        [null, null, null, null, null, null],
         [null, null, null, null, null, null],
         [null, null, null, null, null, null]
-    ],
-    move: { col: -1, row: -1},
-    myTurn: false,
+    ]
 };

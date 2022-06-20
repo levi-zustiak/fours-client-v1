@@ -1,54 +1,61 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import userAtom from '@state/User';
 
+import InputCard from '@components/InputCard';
 import { Container } from './User.styled';
-import CloseButton from '@components/CloseButton';
-import { Flex, Button, Input } from '@styles/Global.styled';
-import {
-    Step,
-    TextContainer,
-    Title,
-    Description,
-    Form
-} from '@styles/Step.styled';
+
+type LocationState = {
+    from: {
+        pathname: string;
+    }
+}
 
 function User() {
     const [value, setValue] = useState<string>('');
-    const setUser = useSetRecoilState(userAtom);
+    const [user, setUser] = useRecoilState(userAtom);
 
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const handleSubmit = (e: any) => {
+    const state = location.state as LocationState;
+
+    const path= state?.from?.pathname || '/option';
+
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        // Promisify these to make sure the user joined the session
-        setUser(value);
-        navigate('/option');
+        const id = window.crypto.randomUUID();
+        setUser({
+            ...user,
+            id: id,
+            name: value
+        });
+        navigate(path, { replace: true });
     }
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value)
+
+    const inputProps = {
+        text: {
+            heading: 'User',
+            subHeading: 'Enter a name so other players can identify you.',
+            placeholder: 'Name',
+            buttonText: 'Submit'
+        },
+        colors: {
+            buttonBackground: 'red',
+            buttonColor: 'white'
+        },
+        value,
+        handleChange,
+        handleSubmit
+    };
 
     return (
         <Container>
-            <Step>
-                <TextContainer>
-                    <Title>User</Title>
-                    <CloseButton />
-                    <Description>Enter a name so other players can identify you.</Description>
-                </TextContainer>
-                <Flex direction={'column'}>
-                    <Form onSubmit={handleSubmit} autoComplete="off">
-                        <Input value={value} placeholder="Name" onChange={(e) => setValue(e.target.value)} />
-                        <Button
-                            onClick={handleSubmit}
-                            background={'red'}
-                            color={'white'}
-                        >
-                            Submit
-                        </Button>
-                    </Form>
-                </Flex>
-            </Step>
+            <InputCard {...inputProps}/>
         </Container>
     );
 }

@@ -1,19 +1,19 @@
-import { useGameSessionContext } from '@hooks/GameContextProvider';
-
-import IPlayerCard from './IPlayerCard';
+import { useSessionContext } from '@providers/SessionContextProvider';
 
 import { Container, Text } from './PlayerCard.styled';
 
-function PlayerCard(props: IPlayerCard) {
-    const { position } = props;
-    const { gameSession } = useGameSessionContext();
+type PlayerCardProps = {
+    position: string;
+}
 
-    const player = gameSession.game[position] ?? {};
+function PlayerCard(props: PlayerCardProps) {
+    const { position } = props;
 
     return (
-        <Container player={player}>
-            <Text>{player.name}</Text>
-        </Container>
+        // <Container player={player}>
+        //     <Text>{player.user.name}</Text>
+        // </Container>
+        null
     );
 }
 

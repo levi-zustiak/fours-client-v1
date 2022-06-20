@@ -1,17 +1,13 @@
 import { PageContainer, Flex, Button } from '@styles/Global.styled';
 import { Heading, SubHeading } from './Home.styled';
 
-import { useRecoilValue, useResetRecoilState } from 'recoil';
-import userAtom from '@state/User';
 import { useNavigate } from 'react-router-dom';
 
 function Home() {
-  const user = useRecoilValue(userAtom);
-  const reset = useResetRecoilState(userAtom);
   const navigate = useNavigate();
 
   const route = () => {
-    user ? navigate('/option') : navigate('/user');
+    navigate('/option');
   }
 
   return (
@@ -27,7 +23,6 @@ function Home() {
           >
             Get Started
           </Button>
-          <button onClick={reset}>reset</button>
         </Flex>
       </Flex>
     </PageContainer>
