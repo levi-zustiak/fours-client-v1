@@ -20,8 +20,8 @@ interface ColumnAsset {
 
 interface TokenAsset {
   [key: string]: any;
-  redTexture: Texture,
-  yellowTexture: Texture,
+  p1: Texture,
+  p2: Texture,
   args: Args,
   xOffset: number,
   yOffset: number,
@@ -68,8 +68,8 @@ function AssetContextProvider({children}: {children: ReactNode}) {
   };
 
   const tokenAsset = {
-    redTexture: redTokenTexture,
-    yellowTexture: yellowTokenTexture,
+    p1: redTokenTexture,
+    p2: yellowTokenTexture,
     args: [tokenSize, tokenSize] as Args,
     xOffset: xOffset,
     yOffset: yOffset,

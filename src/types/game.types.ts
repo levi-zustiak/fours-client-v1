@@ -12,7 +12,7 @@ export type Players = {
 
 export type Player = {
     id: number;
-    token: string;
+    position: string;
     color: string;
     user?: User;
 }

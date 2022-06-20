@@ -14,7 +14,7 @@ function Token(props: TokenProps) {
   const { index, value } = props;
   const { tokenAsset } = useAssetContext();
 
-  const texture = tokenAsset[value.token];
+  const texture = tokenAsset[value.position];
 
   const final = tokenAsset.yOffset * (index - 2.5);
 
