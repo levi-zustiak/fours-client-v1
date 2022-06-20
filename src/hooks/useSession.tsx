@@ -28,7 +28,7 @@ const useSession = () => {
     const user = useRecoilValue<User>(userAtom);
     const type = useRef<string>();
     const peer = useRef<User>();
-    const gameId = useRef<string>();
+    const [gameId, setGameId] = useState<string>();
     const channel = useRef<RTCDataChannel>();
     const pc = useRef<RTCPeerConnection>();
     const connecting = useRef<boolean>(false);
@@ -59,7 +59,7 @@ const useSession = () => {
             throw new Error('Failed to create session');
         }
 
-        gameId.current = data?.gameId;
+        setGameId(data?.gameId);
         socket.on('player-joined', handleJoin);
     }
 
@@ -68,7 +68,7 @@ const useSession = () => {
             type.current = 'PEER';
             connecting.current = true;
 
-            gameId.current = id;
+            setGameId(id);
 
             await socket.emit('joinSession', {
                 gameId: id,
@@ -96,7 +96,7 @@ const useSession = () => {
 
     const end = useCallback((): void => {
         socket.emit('endSession', {
-            gameId: gameId.current,
+            gameId: gameId,
             user: user,
         });
     }, [user]);

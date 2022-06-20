@@ -8,7 +8,7 @@ import { User } from '@types';
 type Session = {
     type: MutableRefObject<string | undefined>;
     peer: MutableRefObject<User | undefined>;
-    gameId: MutableRefObject<string | undefined>;
+    gameId?: string;
     channel: MutableRefObject<RTCDataChannel | undefined>;
     connected: boolean;
     connecting: MutableRefObject<boolean | undefined>;

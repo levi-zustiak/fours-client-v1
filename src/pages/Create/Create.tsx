@@ -1,41 +1,57 @@
-import { useCallback, useState } from 'react';
+import { useEffect } from 'react';
 
 import GameStatus from '@components/GameStatus';
-import { Invite } from '@components/Create';
 import { Container } from './Create.styled';
+import { useSessionContext } from '@providers/SessionContextProvider';
+
+import CloseButton from '@components/CloseButton';
+import { Flex, Button } from '@styles/Global.styled';
+import {
+    Step,
+    TextContainer,
+    Title,
+    Description
+} from '@styles/Step.styled';
 
 const Create = () => {
-    const [step, setStep] = useState(1);
+    const { session } = useSessionContext();
 
-    const nextStep = () => {
-        setStep((step) => ++step)
+    const copyInvite = () => {
+        const invite = `${process.env.REACT_APP_CLIENT_URL}/join/${session.gameId}`;
+        navigator.clipboard.writeText(invite);
     }
 
-    const prevStep = () => {
-        setStep((step) => --step);
-    }
-
-    const getStep = useCallback(() => {
-        switch (step) {
-            case 1:
-                return (
-                    <Invite
-                        nextStep={nextStep}
-                    />
-                )
-            case 2:
-                return (
-                    null
-                )
-            default:
-                console.log('no steps');
+    useEffect(() => {
+        if (!session.connecting.current) {
+            session.create();
         }
-    }, [step]);
+    }, []);
+
+    const back = () => {
+        //router.to(option) ?
+    }
 
     return (
         <Container>
-            {getStep()}
-            <GameStatus />
+            <Step>
+                <TextContainer>
+                    <Title>Invite</Title>
+                    <CloseButton />
+                    <Description>Copy the invite and send it to another player to join your game.</Description>
+                </TextContainer>
+                <Flex content={'start'}>
+                    <Button
+                        onClick={copyInvite}
+                        background={'red'}
+                        color={'white'}
+                        >Copy Invite</Button>
+                    <Button
+                        onClick={back}
+                        background={'lightgrey'}
+                        color={'black'}
+                        >Back</Button>
+                </Flex>
+            </Step>
         </Container>
     )
 }

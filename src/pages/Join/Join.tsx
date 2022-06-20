@@ -1,26 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { Ready } from '@components/Join';
+import InputCard from '@components/InputCard';
 import { Container } from './Join.styled';
 import { useSessionContext } from '@providers/SessionContextProvider';
 import GameStatus from '@components/GameStatus';
-import { useRecoilValue } from 'recoil';
-import userAtom from '@state/User';
 
 const Join = () => {
-    const [step, setStep] = useState(1);
     const { session } = useSessionContext();
     const params = useParams();
-    const user = useRecoilValue(userAtom);
-
-    const nextStep = () => {
-        setStep((step) => ++step)
-    }
-
-    const prevStep = () => {
-        setStep((step) => --step);
-    }
+    const [value, setValue] = useState<string>('');
 
     useEffect(() => {
         if (params?.id && !session.connecting.current) {
@@ -28,22 +17,35 @@ const Join = () => {
         }
     }, [params]);
 
-    const getStep = useCallback(() => {
-        switch (step) {
-            case 1:
-                return (
-                    <Ready
-                        prevStep={prevStep}
-                    />
-                )
-            default:
-                console.log('no steps');
+    const handleSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        
+        if (value) {
+            session.join(value);
         }
-    }, [step]);
+    }
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value);
+
+    const inputProps = {
+        text: {
+            heading: 'Join',
+            subHeading: 'Enter a game id to join an existing game.',
+            placeholder: 'Id',
+            buttonText: 'Submit'
+        },
+        colors: {
+            buttonBackground: 'red',
+            buttonColor: 'white'
+        },
+        value,
+        handleChange,
+        handleSubmit
+    };
 
     return (
         <Container>
-            {getStep()}
+            <InputCard {...inputProps} />
             <GameStatus />
         </Container>
     );

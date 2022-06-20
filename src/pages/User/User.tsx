@@ -1,19 +1,11 @@
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useRecoilState } from 'recoil';
 import userAtom from '@state/User';
 
+import InputCard from '@components/InputCard';
 import { Container } from './User.styled';
-import CloseButton from '@components/CloseButton';
-import { Flex, Button, Input } from '@styles/Global.styled';
-import {
-    Step,
-    TextContainer,
-    Title,
-    Description,
-    Form
-} from '@styles/Step.styled';
 
 type LocationState = {
     from: {
@@ -32,7 +24,7 @@ function User() {
 
     const path= state?.from?.pathname || '/option';
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         const id = window.crypto.randomUUID();
         setUser({
@@ -43,27 +35,27 @@ function User() {
         navigate(path, { replace: true });
     }
 
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => setValue(e.target.value)
+
+    const inputProps = {
+        text: {
+            heading: 'User',
+            subHeading: 'Enter a name so other players can identify you.',
+            placeholder: 'Name',
+            buttonText: 'Submit'
+        },
+        colors: {
+            buttonBackground: 'red',
+            buttonColor: 'white'
+        },
+        value,
+        handleChange,
+        handleSubmit
+    };
+
     return (
         <Container>
-            <Step>
-                <TextContainer>
-                    <Title>User</Title>
-                    <CloseButton />
-                    <Description>Enter a name so other players can identify you.</Description>
-                </TextContainer>
-                <Flex direction={'column'}>
-                    <Form onSubmit={handleSubmit} autoComplete="off">
-                        <Input value={value} placeholder="Name" onChange={(e) => setValue(e.target.value)} />
-                        <Button
-                            onClick={handleSubmit}
-                            background={'red'}
-                            color={'white'}
-                        >
-                            Submit
-                        </Button>
-                    </Form>
-                </Flex>
-            </Step>
+            <InputCard {...inputProps}/>
         </Container>
     );
 }

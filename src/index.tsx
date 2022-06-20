@@ -37,13 +37,22 @@ root.render(
               }
             />
             <Route
-              path="/join/:id"
+              path="/join"
               element={
                 <RequireAuth>
                   <Join />
                 </RequireAuth>
               }
-            />
+            >
+              <Route
+                path=":id"
+                element={
+                  <RequireAuth>
+                    <Join />
+                  </RequireAuth>
+                }
+              />
+            </Route>
             <Route
               path="play"
               element={
