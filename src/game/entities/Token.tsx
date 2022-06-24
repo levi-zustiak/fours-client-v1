@@ -7,14 +7,14 @@ import { useAssetContext } from "../providers/AssetContextProvider";
 
 interface TokenProps {
   index: number;
-  value: Player;
+  value: string;
 }
 
 function Token(props: TokenProps) {
   const { index, value } = props;
   const { tokenAsset } = useAssetContext();
 
-  const texture = tokenAsset[value.position];
+  const texture = tokenAsset[value];
 
   const final = tokenAsset.yOffset * (index - 2.5);
 
@@ -27,7 +27,7 @@ function Token(props: TokenProps) {
       tension: 150,
       bounce: 0.1
     },
-    key: value.id
+    key: value
   });
 
   return transition(({ position }: { position: SpringValue<Array<number>> }) => (

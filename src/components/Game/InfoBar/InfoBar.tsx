@@ -1,12 +1,22 @@
 import { Container } from './InfoBar.styled';
 
 import PlayerCard from './components/PlayerCard';
+import { User } from '@types';
+import { useGameContext } from '@providers/GameContextProvider';
 
-function InfoBar() {
+type InfoBarProps = {
+    type: string;
+    player?: User;
+}
+
+function InfoBar(props: InfoBarProps) {
+    const { type, player } = props;
+    const { game } = useGameContext();
+    const position = type === 'host' ? game.playingAs : game.opponent
+
     return (
         <Container>
-            <PlayerCard position={'p1'} />
-            <PlayerCard position={'p2'} />
+            {position && <PlayerCard position={position} player={player}/>}
         </Container>
     );
 }
