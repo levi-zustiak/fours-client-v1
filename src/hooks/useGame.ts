@@ -1,8 +1,5 @@
-import { useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useEffect, useState } from 'react';
 import { GameState, GameOptions, BoardValue, Coords } from '@types';
-
-import userAtom from '@state/User';
 
 import { defaultState } from '@utils/Constants';
 
@@ -13,36 +10,18 @@ type MoveState = {
 
 function useGame() {
     const [state, setState] = useState<GameState>(defaultState);
-    // const [playingAs, setPlayingAs] = useState<string>();
-    const user = useRecoilValue(userAtom);
+    const [playingAs, setPlayingAs] = useState<string>('');
+    const [opponent, setOpponent] = useState<string>('');
 
     const start = (opts: GameOptions) => {
-        const p1 = {
-            ...state.p1,
-            user: opts.players.p1
-        }
-
-        const p2 = {
-            ...state.p2,
-            user: opts.players.p2
-        }
+        setPlayingAs(opts.playingAs)
+        setOpponent(opts.playingAs === 'p1' ? 'p2' : 'p1')
 
         setState({
             ...defaultState,
-            p1: p1,
-            p2: p2,
-            currentPlayer: p1,
             playing: true,
-        });
+        })
     };
-
-    const isAvailable = (col: number): boolean => {
-        return state.board[col].includes(null);
-    }
-
-    const getNextRow = (col: number): number => {
-        return state.board[col].indexOf(null);
-    }
 
     const getState = async (col: number): Promise<GameState> => {
         const board = copyBoard(state.board);
@@ -72,9 +51,9 @@ function useGame() {
             checkLeftDiagonal(moveState) ||
             checkDraw(moveState)
         ) {
-            const { p1, p2, currentPlayer } = state;
-            const winner = currentPlayer.user?.id;
-            const loser = currentPlayer.id === 1 ? p2.user?.id : p1.user?.id
+            const { currentPlayer } = state;
+            const winner = currentPlayer;
+            const loser = currentPlayer === 'p1' ? 'p2' : 'p1'; 
             return {
                 ...state,
                 board: board,
@@ -93,46 +72,34 @@ function useGame() {
     }
 
     const checkVertical = ({ board, move }: MoveState): boolean => {
-        const { currentPlayer } = state;
         const { col, row } = move;
-    
+
+        const minRow = min(row);
+
         if (row < 3) return false;
-        
-        else if (board[col][row-1]?.id === currentPlayer.id &&
-            board[col][row-2]?.id === currentPlayer.id &&
-            board[col][row-3]?.id === currentPlayer.id
-            ) {
-                return true;
-            }
-        return false;
+
+        return checkArray(board[col].slice(minRow, row + 1));
     }
     
     const checkHorizontal = ({ board, move }: MoveState): boolean => {
-        const { currentPlayer } = state;
-        const { row } = move;
+        const { col, row } = move;
+        const minCol = min(col);
+        const maxCol = max(col, 6)+1;
     
-        for (let i = 0; i < 4; i++) {
-            if (board[i][row]?.id === currentPlayer.id &&
-                board[i+1][row]?.id === currentPlayer.id &&
-                board[i+2][row]?.id === currentPlayer.id &&
-                board[i+3][row]?.id === currentPlayer.id
-                ) {
-                    return true;
-                }
+        for (let i = minCol, j = minCol + 4; j <= maxCol; i++, j++) {
+            if (checkArray(board.slice(i, j).map((col) => col[row]))) {
+                return true
+            }
         }
         return false;
     }
     
     const checkRightDiagonal = ({ board }: MoveState): boolean => {
-        const { currentPlayer } = state;
-
-        for (let c = 0; c < 4; c++) {
+        for (let c = 0; c <= 3; c++) {
             for (let r = 0; r < 4; r++) {
-                if (board[c][r]?.id === currentPlayer.id &&
-                    board[c+1][r+1]?.id === currentPlayer.id &&
-                    board[c+2][r+2]?.id === currentPlayer.id &&
-                    board[c+3][r+3]?.id === currentPlayer.id
-                 ) {
+                const segment = [board[c][r], board[c+1][r+1], board[c+2][r+2], board[c+3][r+3]];
+
+                if (checkArray(segment)) {
                     return true;
                 }
             }
@@ -141,15 +108,11 @@ function useGame() {
     }
     
     const checkLeftDiagonal = ({ board }: MoveState): boolean => {
-        const { currentPlayer } = state;
-
-        for (let c = 3; c < 7; c++) {
+        for (let c = 3; c <= 6; c++) {
             for (let r = 0; r < 4; r++) {
-                if (board[c][r]?.id === currentPlayer.id &&
-                    board[c-1][r+1]?.id === currentPlayer.id &&
-                    board[c-2][r+2]?.id === currentPlayer.id &&
-                    board[c-3][r+3]?.id === currentPlayer.id
-                 ) {
+                const segment = [board[c][r], board[c-1][r+1], board[c-2][r+2], board[c-3][r+3]];
+
+                if (checkArray(segment)) {
                     return true;
                 }
             }
@@ -158,25 +121,39 @@ function useGame() {
     }
 
     const checkDraw = ({ board }: MoveState): boolean => {
-        if (!board.flat().some(x => x === null)) {
-            return true;
-        }
-        return false;
+        return !board.flat().some(x => x === null)
     }
 
     const switchPlayers = () => {
-        const { p1, p2, currentPlayer } = state;
-
-        return currentPlayer.id === 1 ? {...p2} : {...p1};
+        return state.currentPlayer === 'p1' ? 'p2' : 'p1';
     };
-
-    const myTurn = (): boolean => {
-        return user.id === state.currentPlayer.user?.id;
-    }
 
     const copyBoard = (board: Array<Array<BoardValue>>) => {
         return board.map(column => [...column]);
     };
+
+    const checkArray = (arr: Array<BoardValue>) => {
+        return arr.every((value) => value === arr[0] && value !== null)
+    }
+
+    const isAvailable = (col: number): boolean => {
+        return state.board[col].includes(null);
+    }
+
+    const getNextRow = (col: number): number => {
+        return state.board[col].indexOf(null);
+    }
+
+    const min = (num: number) => Math.max(num - 3, 0);
+    const max = (num: number, max: number) => Math.min(num + 3, max) + 1;
+
+    const myTurn = (): boolean => {
+        return playingAs === state.currentPlayer;
+    }
+
+    useEffect(() => {
+        console.log(state);
+    }, [state]);
 
     return {
         state,
@@ -185,7 +162,9 @@ function useGame() {
         start,
         myTurn,
         isAvailable,
-        getNextRow
+        getNextRow,
+        playingAs,
+        opponent
     }
 }
 

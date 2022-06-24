@@ -13,7 +13,7 @@ function Placeholder() {
   const { game } = useGameContext();
   const [{ col, row }, setPlaceholder] = useRecoilState(placeholderAtom);
 
-  const texture = tokenAsset[game.state.currentPlayer.position];
+  const texture = tokenAsset[game.playingAs];
 
   const x = tokenAsset.xOffset * (col - 3);
   const y = tokenAsset.yOffset * (row - 2.5);

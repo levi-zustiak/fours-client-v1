@@ -1,22 +1,21 @@
 import styled from 'styled-components';
-import { Player } from '@types';
+import { animated } from 'react-spring';
 
-const style = ({ player }: Container) => (`
-    background-color: ${player.color};
-    color: ${player.color};
-`);
-
-type Container = {
-    player: Player
+type Props = {
+    backgroundColor: string;
+    color: string;
 }
 
-export const Container = styled.div<Container>`
-    ${p => style(p)}
+export const Container = styled(animated.div)<Props>`
     border-radius: 8px;
+    ${p => `
+        background-color: ${p.backgroundColor};
+        color: ${p.color}
+    `}
 `
 
 export const Text = styled.p`
     margin: 0;
-    padding: .75rem 1.5rem;
+    padding: .75rem 1.25rem;
     font-family: 'Fredoka One', sans-serif;
 `

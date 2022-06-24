@@ -13,25 +13,27 @@ export type Players = {
 export type Player = {
     id: number;
     position: string;
+    backgroundColor: string;
     color: string;
     user?: User;
 }
 
-export type BoardValue = null | Player;
+export type BoardValue = null | string;
 
 export type GameState = {
     [key: string]: any;
     p1: Player;
     p2: Player;
-    currentPlayer: Player;
+    currentPlayer: string;
     winner?: string;
     loser?: string;
     draw: boolean;
     playing: boolean;
-    board: Array<Array<Player | null>>;
+    board: Array<Array<BoardValue>>;
 }
 
 export type GameOptions = {
-    players: Players;
+    // players: Players;
+    playingAs: string;
     //Other game options
 }

@@ -1,17 +1,26 @@
 import styled from 'styled-components';
 
-export const PlayContainer = styled.div`
+export const Container = styled.div`
     height: 100vh;
-    max-width: 960px;
+    max-width: 720px;
     margin: 0 auto;
-    // border: 1px solid red;
     display: flex;
     justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    border: 1px solid red;
 `
 
-export const GameContainer = styled.div`
+// export const GameContainer = styled.div`
+//     aspect-ratio: 4 / 3;
+//     width: 100%;
+//     align-self: center;
+//     border: 1px solid red;
+// `
+
+export const BoardContainer = styled.div`
     aspect-ratio: 4 / 3;
     width: 100%;
-    max-width: 480px;
     align-self: center;
+    border: 1px solid red;
 `

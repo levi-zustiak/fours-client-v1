@@ -19,6 +19,8 @@ type Game = {
     myTurn: () => boolean;
     isAvailable: (move: number) => boolean;
     getNextRow: (col: number) => number;
+    playingAs: string;
+    opponent: string;
 }
 
 type GameContext = {
@@ -56,6 +58,8 @@ function GameContextProvider({ children }: GameContextProps) {
     const onMessage = (e: MessageEvent) => {
         const { type, data } = JSON.parse(e.data);
 
+        console.log(type, data);
+
         switch (type) {
             case 'GAME_MESSAGE':
                 game.setState({
@@ -86,20 +90,15 @@ function GameContextProvider({ children }: GameContextProps) {
         }
     }
 
-    const newGame = () => {
-        const players: Players = {
-            p1: user,
-            p2: session.peer.current
-        };
-
+    const startGame = () => {
         game.start({
-            players
+            playingAs: 'p1'
         });
 
         sendMessage({
-            type: 'NEW_GAME',
+            type: 'START_GAME',
             data: {
-                players,
+                playingAs: 'p2'
             }
         });
     }
@@ -110,7 +109,7 @@ function GameContextProvider({ children }: GameContextProps) {
         }
 
         if (session.type.current === 'HOST') {
-            newGame();
+            startGame();
         }
     }, []);
 

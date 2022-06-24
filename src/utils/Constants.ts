@@ -26,19 +26,21 @@ export const config: RTCConfiguration = {
 const p1: Player = {
     id: 1,
     position: 'p1',
-    color: '#FF5964',
+    backgroundColor: 'var(--red)',
+    color: 'var(--white)'
 }
 
 const p2: Player = {
     id: 2,
     position: 'p2',
-    color: '#FBEC8A',
+    backgroundColor: 'var(--yellow)',
+    color: 'var(--black)',
 }
 
 export const defaultState: GameState = {
     p1: p1,
     p2: p2,
-    currentPlayer: p1,
+    currentPlayer: 'p1',
     winner: '',
     loser: '',
     draw: false,
