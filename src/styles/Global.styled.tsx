@@ -18,11 +18,6 @@ export const Flex = styled.div<IFlex>`
     gap: ${p => p.gap ?? '0'};
 `
 
-// export const Container = styled.div`
-//     max-width: 960px;
-//     margin: 0 auto;
-// `
-
 export const Container = styled.div`
     position: fixed;
     display: flex;

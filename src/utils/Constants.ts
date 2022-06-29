@@ -49,7 +49,7 @@ export const defaultState: GameState = {
         [null, null, null, null, null, null],
         [null, null, null, null, null, null],
         [null, null, null, null, null, null],
-        [null, null, null, null, null, null],
+        ['p1', 'p1', 'p1', null, null, null],
         [null, null, null, null, null, null],
         [null, null, null, null, null, null],
         [null, null, null, null, null, null]

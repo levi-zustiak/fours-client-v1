@@ -1,10 +1,8 @@
 import useGame from '@hooks/useGame';
-import { createContext, useMemo, useContext, ReactNode, useEffect } from 'react';
+import { createContext, useMemo, useContext, ReactNode, useEffect, useState } from 'react';
 
-import { GameOptions, GameState, Players } from '@types';
+import { GameOptions, GameState } from '@types';
 import { useSessionContext } from './SessionContextProvider';
-import { useRecoilValue } from 'recoil';
-import userAtom from '@state/User';
 
 export type Message = {
     type: string;
@@ -26,6 +24,9 @@ type Game = {
 type GameContext = {
     game: Game;
     move: (col: number) => void;
+    newGame: () => void;
+    reply: (type: string) => void;
+    modalState: string;
 }
 
 type GameContextProps = {
@@ -38,7 +39,7 @@ function GameContextProvider({ children }: GameContextProps) {
     const { session } = useSessionContext();
 
     const game = useGame();
-    const user = useRecoilValue(userAtom);
+    const [modalState, setModalState] = useState<string>('DEFAULT');
 
     const move = async (col: number): Promise<void> => {
         if (game.state.playing && game.myTurn() && game.isAvailable(col)) {
@@ -49,6 +50,24 @@ function GameContextProvider({ children }: GameContextProps) {
                 data: newState
             });
         }
+    }
+
+    const newGame = async () => {
+        setModalState('AWAIT_REPLY');
+
+        sendMessage({
+            type: 'NEW_GAME',
+            data: {}
+        });
+    }
+
+    const reply = async (type: string) => {
+        setModalState('DEFAULT')
+
+        sendMessage({
+            type: type,
+            data: {}
+        })
     }
 
     const sendMessage = (message: Message): void => {
@@ -73,18 +92,22 @@ function GameContextProvider({ children }: GameContextProps) {
 
                 break;
 
-            case 'REMATCH':
-                //handle rematch logic
+            case 'NEW_GAME':
+                setModalState('AWAIT_CHOICE');
 
                 break;
 
             case 'ACCEPT':
-                //handle accept rematch logic
+                console.log('Rematch accepted');
+                setModalState('DEFAULT');
+                startGame();
 
                 break;
 
             case 'DECLINE':
-                //handle accept rematch logic
+                //set to declined state
+                console.log('Rematch declined');
+                setModalState('DEFAULT');
 
                 break;
         }
@@ -113,10 +136,17 @@ function GameContextProvider({ children }: GameContextProps) {
         }
     }, []);
 
+    useEffect(() => {
+        console.log(modalState);
+    }, [modalState])
+
     const contextValue: GameContext = useMemo(() => ({
         game,
-        move
-    }), [game, move]);
+        move,
+        newGame,
+        reply,
+        modalState
+    }), [game, move, reply, newGame, modalState]);
 
     return (
         <GameContext.Provider value={contextValue}>
