@@ -1,31 +1,33 @@
-import { useRecoilValue } from 'recoil';
-import userAtom from '@state/User';
-
-import Win from "../Win";
-import Lose from "../Lose";
-
 import { Container } from "@styles/Global.styled";
+import { useGameContext } from '@providers/GameContextProvider';
+import Waiting from "../Waiting";
+import Choice from "../Choice";
+import NewGame from "../NewGame";
 
-import { GameState } from '@types';
+export function ModalContainer() {
+    const { game, modalState } = useGameContext();
 
-type ModalContainerProps = {
-    game: GameState;
-}
+    const gameOver = !game.state.playing;
 
-export function ModalContainer(props: ModalContainerProps) {
-    const { game } = props;
-    const user = useRecoilValue(userAtom);
+    const getState = () => {
+        switch (modalState) {
+            case 'AWAIT_REPLY':
+                return <Waiting />
 
-    const winner = game.winner && game.winner === user.id && !game.draw;
-    const loser = game.loser && game.loser === user.id && !game.draw;
+            case 'AWAIT_CHOICE':
+                return <Choice />
+
+            default:
+                return <NewGame />
+        }
+    }
 
     return (
-        <Container>
-            {winner && <Win />}
-            {loser && <Lose />}
-            {/* <Draw /> */}
-            {/* <Invite /> */}
-        </Container>
+        <>
+            {gameOver && <Container>
+                {getState()}
+            </Container>}
+        </>
     );
 }
 

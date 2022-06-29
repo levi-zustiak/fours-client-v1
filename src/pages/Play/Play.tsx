@@ -10,6 +10,7 @@ import { useSessionContext } from '@providers/SessionContextProvider';
 import { InfoBar } from '@components/Game';
 import { useRecoilValue } from 'recoil';
 import userAtom from '@state/User';
+import { ModalContainer } from '@components/Modals';
 
 function Play() {
     const { session } = useSessionContext();
@@ -23,6 +24,7 @@ function Play() {
                     <Game />
                 </BoardContainer>
                 <InfoBar type="host" player={user}/>
+                <ModalContainer/>
             </GameContextProvider>
         </Container>
     )
