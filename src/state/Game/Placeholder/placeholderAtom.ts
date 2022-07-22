@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import EAtoms from "../EAtoms";
+import EAtoms from "../../EAtoms";
 
 const placeholderAtom = atom({
   key: EAtoms.PLACEHOLDER,

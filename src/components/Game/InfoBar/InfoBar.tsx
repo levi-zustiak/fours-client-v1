@@ -11,12 +11,12 @@ type InfoBarProps = {
 
 function InfoBar(props: InfoBarProps) {
     const { type, player } = props;
-    const { game } = useGameContext();
-    const position = type === 'host' ? game.playingAs : game.opponent
+    // const { playingAs } = useGameContext();
+    // const position = type === 'host' ? game.playingAs : game.opponent
 
     return (
         <Container>
-            {position && <PlayerCard position={position} player={player}/>}
+            {/* {position && <PlayerCard position={position} player={player}/>} */}
         </Container>
     );
 }

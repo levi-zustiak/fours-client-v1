@@ -1,5 +1,4 @@
 import { useTransition, SpringValue } from "@react-spring/three";
-import { Player } from "@types";
 
 import GameObject from "../components/GameObject";
 

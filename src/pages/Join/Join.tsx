@@ -1,27 +1,22 @@
-import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, FormEvent, ChangeEvent } from 'react';
 
 import InputCard from '@components/InputCard';
 import { Container } from './Join.styled';
-import { useSessionContext } from '@providers/SessionContextProvider';
 import GameStatus from '@components/GameStatus';
+import { useSessionContext } from '@providers/SessionContextProvider';
+import { useRecoilValue } from 'recoil';
+import userAtom from '@state/User';
 
 const Join = () => {
-    const { session } = useSessionContext();
-    const params = useParams();
     const [value, setValue] = useState<string>('');
-
-    useEffect(() => {
-        if (params?.id && !session.connecting.current) {
-            session.join(params?.id);
-        }
-    }, [params]);
+    const svc = useSessionContext();
+    const user = useRecoilValue(userAtom);
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         
         if (value) {
-            session.join(value);
+            svc.send({ type: 'JOIN', data: { gameId: value, user } })
         }
     }
 

@@ -1,4 +1,5 @@
 import { useAssetContext } from "../providers/AssetContextProvider";
+import { useEffect } from "react";
 
 import Column from "./Column";
 import Placeholder from "./Placeholder";
@@ -8,7 +9,11 @@ import { useGameContext } from "@providers/GameContextProvider";
 
 function Board() {
   const { boardAsset } = useAssetContext();
-  const { game } = useGameContext();
+  const { state } = useGameContext();
+
+  useEffect(() => {
+    console.log(state);
+}, [state]);
 
   return (
     <GameObject
@@ -16,7 +21,7 @@ function Board() {
       geometry={boardAsset.args}
       texture={boardAsset.texture}
     >
-      {game.state.board.map((column, i) => (
+      {state.board.map((column, i) => (
         <Column key={i} index={i} column={column} />
       ))}
       <Placeholder />

@@ -1,45 +1,26 @@
-import { createContext, useMemo, useContext, ReactNode, MutableRefObject, useEffect } from 'react';
+import { createContext, useContext, ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { machine } from '@machines/Session';
 
-import useSession from '@hooks/useSession';
+import { useInterpret } from '@xstate/react';
 
-import { User } from '@types';
+import type { Interpreter } from 'xstate';
+import type { Context, Events, States } from '@machines/types';
 
-type Session = {
-    type: MutableRefObject<string | undefined>;
-    peer: MutableRefObject<User | undefined>;
-    gameId?: string;
-    channel: MutableRefObject<RTCDataChannel | undefined>;
-    connected: boolean;
-    connecting: MutableRefObject<boolean | undefined>;
-    create: () => Promise<void>;
-    join: (id: string) => Promise<void>;
-    end: () => void;
-    closeConnection: () => Promise<void>;
-}
+const SessionContext = createContext<any | undefined>(undefined);
 
-type SessionContext = {
-    session: Session;
-}
-
-const SessionContext = createContext<SessionContext | undefined>(undefined);
-
-function SessionContextProvider({ children }: {children: ReactNode}) {
-    const session = useSession();
+function SessionContextProvider({ children }: {children: ReactElement}) {
     const navigate = useNavigate();
+    const sessionSvc = useInterpret(machine);
 
-    useEffect(() => {
-        if (session.connected) {
-            navigate('/play');
-        }
-    }, [session.connected])
-
-    const contextValue: SessionContext = useMemo(() => ({
-        session
-    }), [session]);
+    // useEffect(() => {
+    //     if (session.connected) {
+    //         navigate('/play');
+    //     }
+    // }, [session.connected];
 
     return (
-        <SessionContext.Provider value={contextValue}>
+        <SessionContext.Provider value={sessionSvc}>
             {children}
         </SessionContext.Provider>
     );
@@ -48,7 +29,7 @@ function SessionContextProvider({ children }: {children: ReactNode}) {
 function useSessionContext()  {
     const context = useContext(SessionContext);
 
-    if (context === undefined) {
+    if (!context) {
         throw new Error("SessionContext was used outside of it's provider");
     }
 

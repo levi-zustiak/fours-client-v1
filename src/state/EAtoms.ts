@@ -1,7 +1,8 @@
 export enum EAtoms {
-    ERROR = 'ERROR',
     USER = 'USER',
-    SESSION = 'SESSION',
+    PEER = 'PEER',
+    GAMEID = 'GAMEID',
+    GAMESTATE = 'GAMESTATE',
     PLACEHOLDER = 'PLACEHOLDER',
 }
 

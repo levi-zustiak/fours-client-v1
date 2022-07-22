@@ -3,17 +3,20 @@ import { useSpring } from "@react-spring/three";
 
 import { useRecoilState } from "recoil";
 import { useAssetContext } from "../providers/AssetContextProvider";
-import placeholderAtom from "@state/Placeholder";
+import placeholderAtom from "@state/Game/Placeholder";
 
 import GameObject from "../components/GameObject";
+import useHelpers from "@hooks/useHelpers";
 import { useGameContext } from "@providers/GameContextProvider";
 
 function Placeholder() {
   const { tokenAsset } = useAssetContext();
-  const { game } = useGameContext();
+  const { isAvailable, getNextRow } = useHelpers();
   const [{ col, row }, setPlaceholder] = useRecoilState(placeholderAtom);
+  const { state } = useGameContext();
 
-  const texture = tokenAsset[game.playingAs];
+  // const texture = tokenAsset[game.playingAs];
+  const texture = tokenAsset['p1'];
 
   const x = tokenAsset.xOffset * (col - 3);
   const y = tokenAsset.yOffset * (row - 2.5);
@@ -33,30 +36,30 @@ function Placeholder() {
   });
 
   const getNextPosition = () => {
-    if (game.isAvailable(col)) {
+    if (isAvailable(col)) {
       setPlaceholder({
         col: col,
-        row: game.getNextRow(col)
+        row: getNextRow(col)
       });
-    } else if (game.isAvailable(3)) {
+    } else if (isAvailable(3)) {
       setPlaceholder({
         col: 3,
-        row: game.getNextRow(3)
+        row: getNextRow(3)
       });
     } else {
       let i, j;
 
       for (i = 4, j = 2; i < 7; i++, j--) {
-        if (game.isAvailable(j)) {
+        if (isAvailable(j)) {
           setPlaceholder({
             col: j,
-            row: game.getNextRow(j)
+            row: getNextRow(j)
           });
           break;
-        } else if (game.isAvailable(i)) {
+        } else if (isAvailable(i)) {
           setPlaceholder({
             col: i,
-            row: game.getNextRow(i)
+            row: getNextRow(i)
           });
           break;
         }
@@ -66,7 +69,7 @@ function Placeholder() {
 
   useEffect(() => {
     getNextPosition();
-  }, [game.state]);
+  }, [state]);
 
   return (
     <GameObject
