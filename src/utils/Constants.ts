@@ -36,22 +36,3 @@ const p2: Player = {
     backgroundColor: 'var(--yellow)',
     color: 'var(--black)',
 }
-
-export const defaultState: GameState = {
-    p1: p1,
-    p2: p2,
-    currentPlayer: 'p1',
-    winner: '',
-    loser: '',
-    draw: false,
-    playing: false,
-    board: [
-        [null, null, null, null, null, null],
-        [null, null, null, null, null, null],
-        [null, null, null, null, null, null],
-        ['p1', 'p1', 'p1', null, null, null],
-        [null, null, null, null, null, null],
-        [null, null, null, null, null, null],
-        [null, null, null, null, null, null]
-    ]
-};

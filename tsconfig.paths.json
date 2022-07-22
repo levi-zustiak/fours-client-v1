@@ -9,7 +9,8 @@
             "@state/*": ["src/state/*"],
             "@types": ["src/types"],
             "@hooks/*": ["src/hooks/*"],
-            "@providers/*": ["src/providers/*"]
+            "@providers/*": ["src/providers/*"],
+            "@machines/*": ["src/machines/*"]
         }
     }
 }

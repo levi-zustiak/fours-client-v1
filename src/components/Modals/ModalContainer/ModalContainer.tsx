@@ -3,11 +3,14 @@ import { useGameContext } from '@providers/GameContextProvider';
 import Waiting from "../Waiting";
 import Choice from "../Choice";
 import NewGame from "../NewGame";
+import { useState } from "react";
 
 export function ModalContainer() {
-    const { game, modalState } = useGameContext();
+    // const {  } = useGameContext();
+    const [modalState, setModalState] = useState('DEFAULT');
 
-    const gameOver = !game.state.playing;
+    // const gameOver = !game.state.playing;
+    const gameOver = false;
 
     const getState = () => {
         switch (modalState) {

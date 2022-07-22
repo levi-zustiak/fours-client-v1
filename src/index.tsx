@@ -28,7 +28,14 @@ root.render(
           <Routes>
             <Route index element={<Home />} />
             <Route path="/user" element={<User />} />
-            <Route path="/option" element={<Option />} />
+            <Route
+              path="/option"
+              element={
+                <RequireAuth>
+                  <Option />
+                </RequireAuth>
+              }
+            />
             <Route
               path="/create"
               element={

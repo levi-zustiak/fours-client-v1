@@ -1,5 +1,4 @@
 import { useGameContext } from '@providers/GameContextProvider';
-import { useSessionContext } from '@providers/SessionContextProvider';
 import { useSpring } from 'react-spring';
 import { User } from '@types';
 import { useEffect, useState } from 'react';
@@ -35,8 +34,6 @@ const theme: Theme = {
 
 function PlayerCard(props: PlayerCardProps) {
     const { position, player } = props;
-
-    const { game } = useGameContext();
     const [active, setActive] = useState<boolean>(false);
 
     const spring = useSpring({
@@ -47,9 +44,9 @@ function PlayerCard(props: PlayerCardProps) {
         }
     });
 
-    useEffect(() => {
-        setActive(position === game.state.currentPlayer);
-    }, [game.state])
+    // useEffect(() => {
+    //     setActive(position === game.state.currentPlayer);
+    // }, [game.state])
 
     const containerProps = {
         backgroundColor: theme[position].backgroundColor,

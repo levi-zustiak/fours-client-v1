@@ -20,16 +20,18 @@ export type Player = {
 
 export type BoardValue = null | string;
 
+export type Board = Array<Array<BoardValue>>;
+
 export type GameState = {
-    [key: string]: any;
-    p1: Player;
-    p2: Player;
+    // [key: string]: any;
+    // p1: Player;
+    // p2: Player;
     currentPlayer: string;
     winner?: string;
     loser?: string;
     draw: boolean;
-    playing: boolean;
-    board: Array<Array<BoardValue>>;
+    gameOver: boolean;
+    board: Board;
 }
 
 export type GameOptions = {

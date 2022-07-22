@@ -8,11 +8,17 @@ import {
     Title,
     Description,
 } from '@styles/Step.styled';
+import { useSessionContext } from '@providers/SessionContextProvider';
+import { useRecoilValue } from 'recoil';
+import userAtom from '@state/User';
 
 export default function Option() {
     const navigate = useNavigate();
+    const svc = useSessionContext();
+    const user = useRecoilValue(userAtom);
 
     const create = () => {
+        svc.send({ type: 'CREATE', data: { user }})
         navigate('/create');
     }
 

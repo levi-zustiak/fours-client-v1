@@ -8,7 +8,7 @@ const defaultState: User = {
     name: '',
 }
 
-const userAtom = atom({
+const userAtom = atom<User>({
     key: EAtoms.USER,
     default: defaultState,
 });

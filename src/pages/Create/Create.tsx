@@ -1,8 +1,5 @@
-import { useEffect } from 'react';
-
 import GameStatus from '@components/GameStatus';
 import { Container } from './Create.styled';
-import { useSessionContext } from '@providers/SessionContextProvider';
 
 import CloseButton from '@components/CloseButton';
 import { Flex, Button } from '@styles/Global.styled';
@@ -12,23 +9,23 @@ import {
     Title,
     Description
 } from '@styles/Step.styled';
+import { useSessionContext } from '@providers/SessionContextProvider';
+import { useActor, useSelector } from '@xstate/react';
 
 const Create = () => {
-    const { session } = useSessionContext();
+    const svc = useSessionContext();
+    const [state] = useActor(svc);
+    const gameId = useSelector(svc, (state: any) => state.context.gameId)
+
+    console.log(state);
 
     const copyInvite = () => {
-        const invite = `${process.env.REACT_APP_CLIENT_URL}/join/${session.gameId}`;
+        const invite = `${process.env.REACT_APP_CLIENT_URL}/join/${gameId}`;
         navigator.clipboard.writeText(invite);
     }
 
-    useEffect(() => {
-        if (!session.connecting.current) {
-            session.create();
-        }
-    }, []);
-
     const back = () => {
-        //router.to(option) ?
+        null
     }
 
     return (

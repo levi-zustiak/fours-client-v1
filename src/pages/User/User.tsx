@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import userAtom from '@state/User';
 
 import InputCard from '@components/InputCard';
@@ -15,7 +15,7 @@ type LocationState = {
 
 function User() {
     const [value, setValue] = useState<string>('');
-    const [user, setUser] = useRecoilState(userAtom);
+    const setUser = useSetRecoilState(userAtom);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -28,8 +28,7 @@ function User() {
         e.preventDefault();
         const id = window.crypto.randomUUID();
         setUser({
-            ...user,
-            id: id,
+            id,
             name: value
         });
         navigate(path, { replace: true });
