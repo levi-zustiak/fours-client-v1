@@ -1,6 +1,8 @@
 import { createMachine, assign } from 'xstate';
 import { io } from 'socket.io-client';
 
+import LobbyApi from '@common/LobbyApi;';
+
 import type { Context, Events, States, Ack, Joined } from './types';
 
 // const handleAck = (ack: Ack, { resolve, reject }: Promise) => {
@@ -93,13 +95,19 @@ createMachine<Context, Events, States>({
       validJoin: (ctx, { data }: any) => ((data?.gameId?.trim() && data?.user?.id) ?? false),
     },
     services: {
-        connect: async (ctx: any, e: any) => {            
-            return await new Promise((resolve, reject) => {
-                ctx.socket.emit(e.type, { ...e.data }, ({ response, data, error }: Ack) => {
-                    response === 200 ? resolve(data) : reject(error)
-                });
-            })
-        },
+      connect: async (ctx: any, e: any) => {
+        const data = LobbyApi.connect(e.data);
+        console.log(data);
+        
+        return data;
+      },
+        // connect: async (ctx: any, e: any) => {            
+        //     return await new Promise((resolve, reject) => {
+        //         ctx.socket.emit(e.type, { ...e.data }, ({ response, data, error }: Ack) => {
+        //             response === 200 ? resolve(data) : reject(error)
+        //         });
+        //     })
+        // },
         wait: (ctx: any, e: any) => (send: any) => {
             ctx.socket.on('player-joined', ({ user }: Joined) => {
                 send({ type: "JOINED", data: { user } })
